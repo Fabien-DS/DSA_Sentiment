@@ -1,0 +1,14 @@
+name: Continuous Integration
+
+on: [push]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Build Docker container
+        run: touch .env && make dev-start
+      - name: Run CI
+        run: make ci
