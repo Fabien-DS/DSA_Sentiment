@@ -1,4 +1,4 @@
-FROM manifoldai/orbyter-ml-dev:3.3
+FROM manifoldai/orbyter-dl-dev
 ADD requirements.txt /build/requirements.txt
 WORKDIR /build/
 RUN pip install --upgrade pip
