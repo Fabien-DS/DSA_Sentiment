@@ -17,6 +17,11 @@ import numpy as np
 from dsa_sentiment.util.config import parse_config
 from dsa_sentiment.util.logging import setup_logging_env
 
+from sklearn.metrics import f1_score
+from sklearn.metrics import classification_report
+
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -104,6 +109,14 @@ def log_experiment(
             logger.info(f"Logging artifact {key}")
             mlflow.log_artifact(val)
 
+
+
+
+def eval_metrics(actual, pred):
+    # compute relevant metrics
+    f1 = f1_score(actual, pred, average='macro')
+    cr = classification_report(actual, pred)
+    return f1, cr
 
 if __name__ == "__main__":
     main()
