@@ -1,0 +1,387 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1. Consignes &#8212; DSA 2021 - TD Sentiment Twitter</title>
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="1. Description du projet et de la stratégie a priori" href="1-strat%C3%A9gie.html" />
+    <link rel="prev" title="TD Antoine LY : rapport de Fabien FAIVRE" href="../intro.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+      <img src="../_static/assoc_nlogo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">DSA 2021 - TD Sentiment Twitter</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../intro.html">
+   TD Antoine LY : rapport de Fabien FAIVRE
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Consignes
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   1. Consignes
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Analyse
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="1-strat%C3%A9gie.html">
+   1. Description du projet et de la stratégie a priori
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="2-Chargement_initial_des_donn%C3%A9es.html">
+   2. Chargement initial des données
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="3-analyse_descriptive.html">
+   3. Analyse descriptive
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="4-mod%C3%A9lisation.html">
+   4. Modélisation
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/notebooks/consignes.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/executablebooks/jupyter-book"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2Fnotebooks/consignes.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#les-donnees">
+   1.1. Les données
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#le-challenge">
+   1.2. Le challenge
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#la-metrique-d-evaluation">
+   1.3. La métrique d’évaluation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#labels-a-utiliser-pour-la-colonne-sentiment">
+   1.4. Labels à utiliser pour la colonne
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     sentiment
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#informations-pratiques-sur-le-rendu-et-la-notation">
+   1.5. Informations pratiques sur le rendu et la notation.
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#notation">
+     1.5.1. Notation
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#rendu">
+     1.5.2. Rendu
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#language-de-programmation">
+   1.6. Language de programmation
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="consignes">
+<h1><span class="section-number">1. </span>Consignes<a class="headerlink" href="#consignes" title="Permalink to this headline">¶</a></h1>
+<p>L’objectif est de vous faire approfondir une notion de machine learning aux travers d’une compétition Kaggle. Kaggle est aujourd’hui un site de compétition incontournable dans le monde du machine learning. Même si la plateforme n’est pas représentative des enjeux opérationnels, elle est néanmoins représentative des sujets d’attention de la communauté scientifique et demeure un bon outil d’apprentissage est de partage.</p>
+<p>Le projet consiste donc à utiliser le challenge <a class="reference external" href="https://www.kaggle.com/c/tweet-sentiment-extraction/overview/description">Tweet sentiment extraction</a> à des fins académiques.</p>
+<div class="section" id="les-donnees">
+<h2><span class="section-number">1.1. </span>Les données<a class="headerlink" href="#les-donnees" title="Permalink to this headline">¶</a></h2>
+<p>Les données sont celles proposées par le challenge. Elles composent de deux fichiers:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">train.csv</span></code> ce document comportent les données à utiliser pour calibrer votre modèle. Il comporte toutes les colonnes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test.csv</span></code> ce document n’est utilisé <strong>que</strong> pour évaluer la performance finale de votre modèle. En aucun cas il ne peut être utilisé pour fine-tuner ou calibrer votre modèle. Il simule les données qui ne sont normalement JAMAIS accessible sur Kaggle (ni dans la vraie vie). à considérer comme un nouvel échantillon.</p></li>
+</ul>
+</div>
+<div class="section" id="le-challenge">
+<h2><span class="section-number">1.2. </span>Le challenge<a class="headerlink" href="#le-challenge" title="Permalink to this headline">¶</a></h2>
+<p>Prédire la colonne <code class="docutils literal notranslate"><span class="pre">sentiment</span></code> à partir de la colonne <code class="docutils literal notranslate"><span class="pre">text</span></code>.</p>
+</div>
+<div class="section" id="la-metrique-d-evaluation">
+<h2><span class="section-number">1.3. </span>La métrique d’évaluation<a class="headerlink" href="#la-metrique-d-evaluation" title="Permalink to this headline">¶</a></h2>
+<p>On utilisera un score F1 à l’aide de la fonction implémentée dans <code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>from sklearn.metrics import f1_score
+y_true = [0, 1, 2, 0, 1, 2]
+y_pred = [0, 2, 1, 0, 0, 1]
+f1_score(y_true, y_pred, average=&#39;macro&#39;)
+</pre></div>
+</div>
+</div>
+<div class="section" id="labels-a-utiliser-pour-la-colonne-sentiment">
+<h2><span class="section-number">1.4. </span>Labels à utiliser pour la colonne <code class="docutils literal notranslate"><span class="pre">sentiment</span></code><a class="headerlink" href="#labels-a-utiliser-pour-la-colonne-sentiment" title="Permalink to this headline">¶</a></h2>
+<p>Vous devrez retraiter la colonne <code class="docutils literal notranslate"><span class="pre">sentiment</span></code> en utilisant les remplacements suivants:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&quot;neutral&quot;  -&gt;  0
+&quot;negative&quot; -&gt; -1
+&quot;positive&quot; -&gt;  1
+</pre></div>
+</div>
+</div>
+<div class="section" id="informations-pratiques-sur-le-rendu-et-la-notation">
+<h2><span class="section-number">1.5. </span>Informations pratiques sur le rendu et la notation.<a class="headerlink" href="#informations-pratiques-sur-le-rendu-et-la-notation" title="Permalink to this headline">¶</a></h2>
+<p>L’objectif est de se familiariser avec les techniques de text-mining à des fins de classification de sentiments d’un texte. La notation se décomposera en deux parties:</p>
+<div class="section" id="notation">
+<h3><span class="section-number">1.5.1. </span>Notation<a class="headerlink" href="#notation" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Votre méthodologie et votre approche (12 points) : cette partie doit mettre en avant la motivation des différents retraitements que vous avez appliquez, votre effort de comprendre les implémentations des pacakges que vous aurez utilisés ainsi que le bon sens que leurs utilisations transcrit.</p></li>
+<li><p>La performance finale et méthodologie (4 + 4 = 8 points) : cette notation sera relative au groupe. 3 tentatives d’algorithmes/preprocessing différents permettrons de garantir 4 points sur les 8. Les 3 premiers du classement (du groupe 2020) calculé à l’aide du score F1 sur la base de test atteigneront 4 points supplémentaires. Le reste du barême relatif au classement sera dégressif de façon linéaire par palier: les derniers obtenant 1 point minimum.</p></li>
+</ul>
+</div>
+<div class="section" id="rendu">
+<h3><span class="section-number">1.5.2. </span>Rendu<a class="headerlink" href="#rendu" title="Permalink to this headline">¶</a></h3>
+<p>Le rendu se fera sous la forme d’un court rapport (max 5 pages). Ce dernier peut se faire sous la forme d’un notebook (html ou pdf) ou d’un rapport traditionnel (word, pdf). Il doit mettre en avant la méthodologie employée, les difficultés rencontrées ainsi que les différents apprentissages.</p>
+<p>Le projet sera à rendre lors de la séance de <strong>Juillet 2021</strong> de restitution.</p>
+</div>
+</div>
+<div class="section" id="language-de-programmation">
+<h2><span class="section-number">1.6. </span>Language de programmation<a class="headerlink" href="#language-de-programmation" title="Permalink to this headline">¶</a></h2>
+<p>Il est fortement recommandé d’effectuer le projet en python, mais ceci n’est pas obligatoire.</p>
+<p>Bibliographie:</p>
+<p><a class="reference external" href="https://www.scor.com/fr/articles-experts/accroitre-vitesse-et-precision-grace-lexploration-de-texte-et-au-traitement">https://www.scor.com/fr/articles-experts/accroitre-vitesse-et-precision-grace-lexploration-de-texte-et-au-traitement</a></p>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        
+        <div class='prev-next-bottom'>
+            
+    <a class='left-prev' id="prev-link" href="../intro.html" title="previous page"><strong>TD Antoine LY : rapport de Fabien FAIVRE</strong></a>
+    <a class='right-next' id="next-link" href="1-strat%C3%A9gie.html" title="next page"><span class="section-number">1. </span>Description du projet et de la stratégie a priori</a>
+
+        </div>
+        
+        </div>
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Fabien Faivre<br/>
+        
+            &copy; Copyright 2021.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
+
+  
+  </body>
+</html>

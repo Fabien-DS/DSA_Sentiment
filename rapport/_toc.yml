@@ -1,0 +1,21 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: intro
+
+
+parts:
+- caption: Consignes
+  numbered: True
+  chapters:
+  - file: notebooks/consignes.md
+- caption: Analyse
+  numbered: True
+  chapters:
+  - file: notebooks/1-stratégie.ipynb
+  - file: notebooks/2-Chargement_initial_des_données.ipynb
+  - file: notebooks/3-analyse_descriptive.ipynb
+  - file: notebooks/4-modélisation.ipynb
+  
+  
