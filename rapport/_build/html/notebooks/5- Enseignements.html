@@ -242,21 +242,8 @@
   <div class="section" id="enseignements-et-pistes-d-amelioration">
 <h1><span class="section-number">5. </span>Enseignements et pistes d’amélioration<a class="headerlink" href="#enseignements-et-pistes-d-amelioration" title="Permalink to this headline">¶</a></h1>
 <p>Plusieurs modèle ont été testés. Le modèle champion est un XGBoost optimisé s’appuyant sur une combinaison de features créées à partir de modèles pré entrainé dont roBERTa tweet.
-Ce modèle permet d’atteindre un f1 macro de 76% sur le jeu</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">res_fin2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="s1">&#39;/mnt/data/processed/res_fin2.gzip&#39;</span><span class="p">)</span>
-<span class="n">res_fin2</span>
-</pre></div>
-</div>
-</div>
+Ce modèle permet d’atteindre un f1 macro de <strong>76%</strong> sur le jeu test</p>
+<div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
 <div class="output text_html"><div>
 <style scoped>

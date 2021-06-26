@@ -4,7 +4,7 @@
 # # Enseignements et pistes d'amélioration
 
 # Plusieurs modèle ont été testés. Le modèle champion est un XGBoost optimisé s'appuyant sur une combinaison de features créées à partir de modèles pré entrainé dont roBERTa tweet.
-# Ce modèle permet d'atteindre un f1 macro de 76% sur le jeu 
+# Ce modèle permet d'atteindre un f1 macro de **76%** sur le jeu test
 
 # In[3]:
 
