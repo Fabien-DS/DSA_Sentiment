@@ -395,7 +395,7 @@ plotWc(" ".join(positive_text_prepro), stopwords=stopwords.words('english'), tit
 
 # Les tweets positpositive_text_prepro marqués par la forte reprétsentation de mots à connotation positive `love`, `good`, `happy`.
 # 
-# Cest a priori graphique peut être confirmé par un graphique de fréquence des mots individuels les plus présents
+# Cet a priori graphique peut être confirmé par un graphique de fréquence des mots individuels les plus présents
 
 # In[26]:
 
@@ -518,7 +518,7 @@ plot_freq_dist(create_corpus(pd.Series(negative_text_prepro)), ngram=4, title = 
 
 # ### Vérification : validation de l'occurence de certains patterns dans le texte
 
-# In[41]:
+# In[2]:
 
 
 def list_words_with(text_series, search='', nb=30):

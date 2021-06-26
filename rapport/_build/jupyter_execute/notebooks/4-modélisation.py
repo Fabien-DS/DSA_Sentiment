@@ -106,7 +106,7 @@ get_ipython().system('pip freeze > /mnt/docker/requirements.txt')
 
 # Durent ce projet, certaines parties du code ont été re packagées dans un package propre au projet afin de factliter la lecture du core et permettre la réutilisabilité des développements
 
-# In[6]:
+# In[5]:
 
 
 #Cette cellule permet d'appeler la version packagée du projet et d'en assurer le reload avant appel des fonctions
@@ -114,7 +114,7 @@ get_ipython().run_line_magic('load_ext', 'autoreload')
 get_ipython().run_line_magic('autoreload', '2')
 
 
-# In[7]:
+# In[6]:
 
 
 from dsa_sentiment.scripts.make_dataset import load_data
@@ -126,7 +126,7 @@ from dsa_sentiment.scripts.make_dataset import Preprocess_StrLower, Preprocess_t
 
 # [MLFlow](https://mlflow.org/) sera utilisé comme outil de suivi et de stockage des expérimentatiosn réalisées
 
-# In[8]:
+# In[7]:
 
 
 mlflow.tracking.get_tracking_uri()
@@ -134,7 +134,7 @@ mlflow.tracking.get_tracking_uri()
 
 # ### Chargement des données
 
-# In[9]:
+# In[8]:
 
 
 # On Importe les données
@@ -176,7 +176,7 @@ y_test=pd.read_parquet('/mnt/data/interim/y_test.gzip')
 # La première étape consiste à construire une fonction générique qui calculera **les scores du pipeline que nous souhaitons suivre**.
 # Dans le cas présent comme l'exercice de classification est multiclasse, nous sommes intéressés par les `f1`, `precision` et `recall` calculés avec l'option `macro` qui réalise une moyenne des résultats obtenus par classe.
 
-# In[10]:
+# In[9]:
 
 
 def score_estimator(
@@ -234,7 +234,7 @@ def score_estimator(
 
 # Pour pouvoir stocker les scores dans MLFlow, on les convertit en dictionnaires
 
-# In[11]:
+# In[10]:
 
 
 def scores_to_dict(score_df):
@@ -248,7 +248,7 @@ def scores_to_dict(score_df):
 
 # Création d'une fonction affichant une matrice de confusion
 
-# In[12]:
+# In[11]:
 
 
 def plot_cm(y_test, y_pred, target_names=[-1, 0, 1], 
@@ -274,7 +274,7 @@ def plot_cm(y_test, y_pred, target_names=[-1, 0, 1],
 # L'évaluation fianle des modèles se faisant sur base de f1-macro dans le TD, c'est la métrique que nosu avons retenue pour la partie optimisation de la fonction générique
 # :::
 
-# In[13]:
+# In[12]:
 
 
 def trainPipelineMlFlow(mlf_XP, 
@@ -388,7 +388,7 @@ def trainPipelineMlFlow(mlf_XP,
 # Notamment, le libellé des paramètres peut vide devenir délicat et difficilement lisible avec une combinaison de nom d'étape et du nom du paramètre dans l'étape du pipeline.
 # La fonction suivante permet de rechercher tous les paramètres d'un pipeline qui contiennent une chaine de caractère spécifique.
 
-# In[14]:
+# In[13]:
 
 
 def target_params(pipe, dict_keyval):
@@ -411,7 +411,7 @@ def target_params(pipe, dict_keyval):
 
 # La cellule suivante permet de créer des étapes de sélection de colonnes dans les Data Frame en entrée
 
-# In[15]:
+# In[14]:
 
 
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -967,7 +967,7 @@ test
 # 
 # Néanmoins l'utilisation pour faire des prédictions sur l'intégralité d'une base peut vite être longue. Le code suivant permet d'optimiser le temps de parcours des données.
 
-# In[167]:
+# In[23]:
 
 
 def run_loopy_roBERTa(df):
@@ -980,6 +980,7 @@ def run_loopy_roBERTa(df):
     df_result = pd.DataFrame({'roBERTa_neg': v_neg,
                               'roBERTa_neu': v_neu,
                               'roBERTa_pos': v_pos})
+    df_result.set_index(df.index)
     return df_result
 
 
@@ -1102,6 +1103,14 @@ X_val_roBERTa.to_parquet('/mnt/data/interim/X_val_roBERTa.gzip',compression='gzi
 X_test_roBERTa.to_parquet('/mnt/data/interim/X_test_roBERTa.gzip',compression='gzip')
 
 
+# In[17]:
+
+
+X_train_roBERTa = pd.read_parquet('/mnt/data/interim/X_train_roBERTa.gzip')
+X_val_roBERTa = pd.read_parquet('/mnt/data/interim/X_val_roBERTa.gzip')
+X_test_roBERTa = pd.read_parquet('/mnt/data/interim/X_test_roBERTa.gzip')
+
+
 # ![roBERTa_prepro](images/Pipeline_roBERTa_prepro_RF.png)
 
 # In[181]:
@@ -1171,7 +1180,7 @@ résultats
 # 
 # 
 
-# In[186]:
+# In[15]:
 
 
 class Blob(BaseEstimator, TransformerMixin):
@@ -1214,11 +1223,19 @@ X_val_Blob.to_parquet('/mnt/data/interim/X_val_Blob.gzip',compression='gzip')
 X_test_Blob.to_parquet('/mnt/data/interim/X_test_Blob.gzip',compression='gzip')
 
 
+# In[16]:
+
+
+X_train_Blob = pd.read_parquet('/mnt/data/interim/X_train_Blob.gzip')
+X_val_Blob = pd.read_parquet('/mnt/data/interim/X_val_Blob.gzip')
+X_test_Blob = pd.read_parquet('/mnt/data/interim/X_test_Blob.gzip')
+
+
 # On vérifie que TextBlob et roBERTa ne capturent pas les mêmes éléments.
 # 
 # TextBlob fournissant un indicateur global, on approxime les sentiments de rBERTa comme `positive` - `negative`
 
-# In[204]:
+# In[19]:
 
 
 X =pd.DataFrame(columns=['roBERTa_sent'])
@@ -1227,7 +1244,7 @@ X2 = pd.concat([X, X_train_Blob[['polarity']]], axis=1)
 X2.corr()
 
 
-# In[194]:
+# In[24]:
 
 
 fig = px.scatter(x = X_train_roBERTa['roBERTa_pos']- X_train_roBERTa['roBERTa_neg'], 
@@ -1285,6 +1302,14 @@ X_val_Vader.to_parquet('/mnt/data/interim/X_val_Vader.gzip',compression='gzip')
 X_test_Vader.to_parquet('/mnt/data/interim/X_test_Vader.gzip',compression='gzip')
 
 
+# In[18]:
+
+
+X_train_Vader = pd.read_parquet('/mnt/data/interim/X_train_Vader.gzip')
+X_val_Vader = pd.read_parquet('/mnt/data/interim/X_val_Vader.gzip')
+X_test_Vader = pd.read_parquet('/mnt/data/interim/X_test_Vader.gzip')
+
+
 # On vérifie de la même manière que Vader et roBERTa ne capturent pas les mêmes éléments.
 
 # Pour les positifs
@@ -1296,7 +1321,7 @@ X_pos = pd.concat([X_train_roBERTa[['roBERTa_pos']], X_train_Vader[['pos']]], ax
 X_pos.corr()
 
 
-# In[214]:
+# In[25]:
 
 
 fig = px.scatter(x = X_train_roBERTa['roBERTa_pos'], 
@@ -1318,7 +1343,7 @@ X_pos = pd.concat([X_train_roBERTa[['roBERTa_neu']], X_train_Vader[['neu']]], ax
 X_pos.corr()
 
 
-# In[216]:
+# In[26]:
 
 
 fig = px.scatter(x = X_train_roBERTa['roBERTa_neu'], 
@@ -1340,7 +1365,7 @@ X_pos = pd.concat([X_train_roBERTa[['roBERTa_neg']], X_train_Vader[['neg']]], ax
 X_pos.corr()
 
 
-# In[218]:
+# In[27]:
 
 
 fig = px.scatter(x = X_train_roBERTa['roBERTa_neg'], 
@@ -1355,7 +1380,7 @@ fig.show()
 
 # On peut alors calculer la base agrégée
 
-# In[239]:
+# In[20]:
 
 
 X_train_compound = pd.concat([X_train_roBERTa, X_train_Blob, X_train_Vader], axis=1)
@@ -1363,13 +1388,13 @@ X_val_compound = pd.concat([X_val_roBERTa, X_val_Blob, X_val_Vader], axis=1)
 X_test_compound = pd.concat([X_test_roBERTa, X_test_Blob, X_test_Vader], axis=1)
 
 
-# In[240]:
+# In[21]:
 
 
 X_train_compound.head()
 
 
-# In[241]:
+# In[22]:
 
 
 X_val_compound.head()
@@ -1685,191 +1710,4 @@ res_fin2.to_parquet('/mnt/data/processed/res_fin2.gzip',compression='gzip')
 
 
 
-
-
-# In[ ]:
-
-
-
-
-
-# ### Essai opti F1
-
-# In[31]:
-
-
-pipe = bow_pipeline
-
-
-essai_=trainPipelineMlFlow(
-                    mlf_XP="opti F1",
-                    xp_name_iter="test", 
-                    pipeline = pipe, 
-                    X_train = X_train, y_train = y_train, X_test = X_test, y_test = y_test,
-                    target_col = 'sentiment',
-                    fixed_params = target_params(pipe, {'n_jobs':-1,'random_state':42}),
-                    use_opti = False
-                    )
-
-
-# In[32]:
-
-
-essai_.predict_proba(X_train)
-
-
-# In[33]:
-
-
-X_train.head()
-
-
-# In[52]:
-
-
-for var in [-1, 0, 1]:
-    plt.figure(figsize=(12,4))
-    sns.distplot(essai_.predict_proba(X_train)[(y_train['sentiment']==var),0], bins=30, kde=False, 
-                 color='green', label='Negative')
-    sns.distplot(essai_.predict_proba(X_train)[(y_train['sentiment']==var),1], bins=30, kde=False, 
-                 color='red', label='Neutral')
-    sns.distplot(essai_.predict_proba(X_train)[(y_train['sentiment']==var),2], bins=30, kde=False, 
-                 color='blue', label='Positive')
-    plt.legend()
-    plt.title(f'Histogram of {var} by true sentiment');
-
-
-# Stratégie : on maximise le seuil pour la décision positive, puis sur les non positifs, on maximise le seuil pour les négatifs, le reste est neutre
-
-# In[65]:
-
-
-# apply threshold to positive probabilities to create labels
-def to_labels(pos_probs, threshold):
-    return (pos_probs >= threshold).astype('int')
-
-
-# In[62]:
-
-
-def find_optimal_f1_thresholds(pipe, X, y):
-    
-    probs = pipe.predict_proba(X)
-    
-    # keep probabilities for the positive outcome only
-    pos_probs = probs[:,2]
-    # define thresholds
-    thresholds = np.arange(0, 1, 0.001)
-    # evaluate each threshold
-    scores = [f1_score([(1 if i==1 else 0) for i in y ], to_labels(pos_probs, t)) for t in thresholds]
-    # get best threshold
-    ix = np.argmax(scores)
-
-    
-    res = {'pos_threshold' : thresholds[ix], 'pos_f1' : scores[ix] }
-    
-    # keep probabilities for the positive outcome only
-    neg_probs = probs[:,0]
-    # define thresholds
-    thresholds = np.arange(0, 1, 0.001)
-    # evaluate each threshold
-    scores = [f1_score([(1 if i==-1 else 0) for i in y ], to_labels(neg_probs, t)) for t in thresholds]
-    # get best threshold
-    ix = np.argmax(scores)
-
-    
-    res.update({'neg_threshold' : thresholds[ix], 'neg_f1' : scores[ix] })
-    
-    return res
-    
-
-
-# In[119]:
-
-
-thres = find_optimal_f1_thresholds(roBERTa_RF_, X_train_compound, y_train['sentiment'])
-
-
-# In[120]:
-
-
-thres
-
-
-# In[109]:
-
-
-y_train['sentiment']
-
-
-# In[110]:
-
-
-roBERTa_RF_.predict_proba(X_train_compound)
-
-
-# In[63]:
-
-
-def sentiment_predict(pipe, X, dict_thres):
-    seuil_pos=dict_thres['pos_threshold']
-    seuil_neg=dict_thres['neg_threshold']
-
-    probs = pipe.predict_proba(X)
-
-    y_test_pred_pos = to_labels(probs[:,2], seuil_pos)
-    y_test_pred_neg = to_labels(probs[:,0], seuil_neg)
-
-    y_test_pred = y_test_pred_pos
-    y_test_pred[(y_test_pred_pos==0)] = -y_test_pred_neg[(y_test_pred_pos==0)]
-    return y_test_pred
-
-
-# In[122]:
-
-
-y_test_pred = sentiment_predict(roBERTa_RF_, X_test_compound,thres)
-
-
-# In[123]:
-
-
-f1_score(y_test, y_test_pred, average='macro')
-
-
-# In[66]:
-
-
-thres_xgb = find_optimal_f1_thresholds(roBERTa_xgb_, X_train_compound, y_train['sentiment'])
-
-
-# In[67]:
-
-
-y_test_pred_xgb = sentiment_predict(roBERTa_xgb_, X_test_compound,thres_xgb)
-
-
-# In[68]:
-
-
-f1_score(y_test, y_test_pred_xgb, average='macro')
-
-
-# # SHAP
-
-# In[76]:
-
-
-import shap
-
-shap.initjs()
-
-
-# # sujets
-
-# In[ ]:
-
-
-import gensim.corpora as corpora# Create Dictionary
-id2word = corpora.Dictionary(data_words)
 
