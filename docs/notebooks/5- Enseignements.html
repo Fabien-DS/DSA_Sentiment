@@ -241,6 +241,111 @@
                 
   <div class="section" id="enseignements-et-pistes-d-amelioration">
 <h1><span class="section-number">5. </span>Enseignements et pistes d’amélioration<a class="headerlink" href="#enseignements-et-pistes-d-amelioration" title="Permalink to this headline">¶</a></h1>
+<p>Plusieurs modèle ont été testés. Le modèle champion est un XGBoost optimisé s’appuyant sur une combinaison de features créées à partir de modèles pré entrainé dont roBERTa tweet.
+Ce modèle permet d’atteindre un f1 macro de 76% sur le jeu</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">res_fin2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="s1">&#39;/mnt/data/processed/res_fin2.gzip&#39;</span><span class="p">)</span>
+<span class="n">res_fin2</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>modèle</th>
+      <th>f1_macro_val</th>
+      <th>f1_macro_test</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>roBERTa_xgb_opti_</td>
+      <td>0.759147</td>
+      <td>0.759953</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>roBERTa_Blob_Vader_RF_opti_</td>
+      <td>0.756699</td>
+      <td>0.750216</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>roBERTa_RF_opti_</td>
+      <td>0.746630</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>TfIdf_LR_opti_modif_seuil</td>
+      <td>0.709477</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>base_TfIdf_RF_prepro_</td>
+      <td>0.707919</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>base_TfIdf_RF_prepro_opti_</td>
+      <td>0.706432</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>roBERTa_RF_</td>
+      <td>0.705912</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>TfIdf_LR_opti_</td>
+      <td>0.699877</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>TfIdf_LR_prepro_opti_</td>
+      <td>0.698565</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>base_TfIdf_RF_</td>
+      <td>0.669789</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
 <p>Ce projet a été une constant source d’étonnement.</p>
 <p>Le fait de disposer de 3 classes à prédire a été un élément complexifiant par rapport au cas binaire (pas de courbe ROC générale). On devient beaucoup plus dépendant des chiffres.</p>
 <p>Après la découverte de <a class="reference external" href="https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment">twitter-roberta-base-sentiment</a>, je pensais que le sujet serait plié. Après tout ce modèle a été entrainé explicitement pour ce cas (58 millions de tweets, en anglais et optimisé pour l’analyse de sentiments). Je pensais voir le f1 macro s’envoler, ce qui n’a pas été le cas. Le modèle a bien aidé, mais le gain est resté modeste (6 points de f1 macro par rapport aux approches fréquentistes classiques).</p>

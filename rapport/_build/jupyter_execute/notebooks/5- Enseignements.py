@@ -3,6 +3,22 @@
 
 # # Enseignements et pistes d'amélioration
 
+# Plusieurs modèle ont été testés. Le modèle champion est un XGBoost optimisé s'appuyant sur une combinaison de features créées à partir de modèles pré entrainé dont roBERTa tweet.
+# Ce modèle permet d'atteindre un f1 macro de 76% sur le jeu 
+
+# In[3]:
+
+
+import pandas as pd
+
+
+# In[4]:
+
+
+res_fin2 = pd.read_parquet('/mnt/data/processed/res_fin2.gzip')
+res_fin2
+
+
 # Ce projet a été une constant source d'étonnement.
 # 
 # Le fait de disposer de 3 classes à prédire a été un élément complexifiant par rapport au cas binaire (pas de courbe ROC générale). On devient beaucoup plus dépendant des chiffres.
@@ -23,9 +39,3 @@
 # - à l'utilisation de ressources GPU depuis docker
 # - à l'utilisation des GPU pour XGBoost (non pris en compte par défaut)
 # - aux pipelines sklearn, pratiques mais pas toujousr compatibles avec les packages (ex SHAP) et nécessitant souvent des créations de classes ad-hoc
-
-# In[ ]:
-
-
-
-

@@ -1768,7 +1768,7 @@ for i in range(3):
     plt.show()
 
 
-# ### Soumission finale
+# ## Soumission finale
 
 # On réentraine les 2 modèles finalistes sur le jeu de validation sur l'intégralité de `tain + val` et on évalue sur le jeu de test
 
