@@ -9,25 +9,25 @@
 
 # ## Setup
 
-# In[23]:
+# In[1]:
 
 
 get_ipython().system('pip install textblob')
 
 
-# In[24]:
+# In[2]:
 
 
 get_ipython().system('pip install emot')
 
 
-# In[25]:
+# In[3]:
 
 
 get_ipython().system('pip install wordcloud')
 
 
-# In[26]:
+# In[4]:
 
 
 #Temps et fichiers
@@ -95,7 +95,7 @@ import mlflow
 import mlflow.sklearn
 
 
-# In[27]:
+# In[5]:
 
 
 #Cellule strictement technique qui permet de sauver les exigences pour recréer au besoin l'image docker du projet
@@ -106,7 +106,7 @@ get_ipython().system('pip freeze > /mnt/docker/requirements.txt')
 
 # Durent ce projet, certaines parties du code ont été re packagées dans un package propre au projet afin de factliter la lecture du core et permettre la réutilisabilité des développements
 
-# In[28]:
+# In[6]:
 
 
 #Cette cellule permet d'appeler la version packagée du projet et d'en assurer le reload avant appel des fonctions
@@ -114,7 +114,7 @@ get_ipython().run_line_magic('load_ext', 'autoreload')
 get_ipython().run_line_magic('autoreload', '2')
 
 
-# In[29]:
+# In[7]:
 
 
 from dsa_sentiment.scripts.make_dataset import load_data
@@ -126,7 +126,7 @@ from dsa_sentiment.scripts.make_dataset import Preprocess_StrLower, Preprocess_t
 
 # [MLFlow](https://mlflow.org/) sera utilisé comme outil de suivi et de stockage des expérimentatiosn réalisées
 
-# In[30]:
+# In[8]:
 
 
 mlflow.tracking.get_tracking_uri()
@@ -134,7 +134,7 @@ mlflow.tracking.get_tracking_uri()
 
 # ### Chargement des données
 
-# In[50]:
+# In[9]:
 
 
 # On Importe les données
@@ -176,7 +176,7 @@ y_test=pd.read_parquet('/mnt/data/interim/y_test.gzip')
 # La première étape consiste à construire une fonction générique qui calculera **les scores du pipeline que nous souhaitons suivre**.
 # Dans le cas présent comme l'exercice de classification est multiclasse, nous sommes intéressés par les `f1`, `precision` et `recall` calculés avec l'option `macro` qui réalise une moyenne des résultats obtenus par classe.
 
-# In[32]:
+# In[10]:
 
 
 def score_estimator(
@@ -234,7 +234,7 @@ def score_estimator(
 
 # Pour pouvoir stocker les scores dans MLFlow, on les convertit en dictionnaires
 
-# In[33]:
+# In[11]:
 
 
 def scores_to_dict(score_df):
@@ -248,7 +248,7 @@ def scores_to_dict(score_df):
 
 # Création d'une fonction affichant une matrice de confusion
 
-# In[34]:
+# In[12]:
 
 
 def plot_cm(y_test, y_pred, target_names=[-1, 0, 1], 
@@ -274,7 +274,7 @@ def plot_cm(y_test, y_pred, target_names=[-1, 0, 1],
 # L'évaluation fianle des modèles se faisant sur base de f1-macro dans le TD, c'est la métrique que nosu avons retenue pour la partie optimisation de la fonction générique
 # :::
 
-# In[43]:
+# In[13]:
 
 
 def trainPipelineMlFlow(mlf_XP, 
@@ -336,7 +336,9 @@ def trainPipelineMlFlow(mlf_XP,
                                         n_jobs = -1, 
                                         cv = 5, 
                                         scoring = 'f1_macro', 
-                                        n_iter = n_iter)
+                                        n_iter = n_iter,
+                                        random_state = 42
+                                       )
         
         search.fit(X_train, y_train[target_col])
                 
@@ -386,7 +388,7 @@ def trainPipelineMlFlow(mlf_XP,
 # Notamment, le libellé des paramètres peut vide devenir délicat et difficilement lisible avec une combinaison de nom d'étape et du nom du paramètre dans l'étape du pipeline.
 # La fonction suivante permet de rechercher tous les paramètres d'un pipeline qui contiennent une chaine de caractère spécifique.
 
-# In[36]:
+# In[14]:
 
 
 def target_params(pipe, dict_keyval):
@@ -409,7 +411,7 @@ def target_params(pipe, dict_keyval):
 
 # La cellule suivante permet de créer des étapes de sélection de colonnes dans les Data Frame en entrée
 
-# In[37]:
+# In[15]:
 
 
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -443,13 +445,22 @@ class NumberSelector(BaseEstimator, TransformerMixin):
 # 
 # :::
 
+# On suit les modèles dans un DataFrame résultats
+
+# In[125]:
+
+
+résultats = pd.DataFrame(columns=['modèle', 'f1_macro_val'])
+résultats
+
+
 # #### Bag of Words avec Random Forest
 
 # Dans cette expérimentation, nous créons un modèle simple :
 # 
 # ![BoW_RF](images/Pipeline_BoW_RF.png)
 
-# In[38]:
+# In[92]:
 
 
 bow_pipeline = Pipeline(
@@ -463,7 +474,7 @@ bow_pipeline = Pipeline(
 
 # Déjà dans cet exemple simple, le nombre de paramètres est important et leur nom vite complexe :
 
-# In[39]:
+# In[93]:
 
 
 list(bow_pipeline.get_params().keys())
@@ -471,47 +482,60 @@ list(bow_pipeline.get_params().keys())
 
 # En première intention on ajuste le pipeline sur le jeu d'entraînement avant les étapes de preprocessing réalisées lors de l'EDA
 
-# In[45]:
+# In[123]:
+
+
+pipe = bow_pipeline
 
 
 base_TfIdf_RF_= trainPipelineMlFlow(
                     mlf_XP = "Rapport",
                     xp_name_iter = "base_TfIdf_RF", 
-                    pipeline = bow_pipeline, 
+                    pipeline = pipe, 
                     X_train = X_train, y_train = y_train, X_test = X_val, y_test = y_val,
                     target_col = 'sentiment',
-                    fixed_params = {'classifier__random_state':42}
+                    fixed_params = target_params( pipe , {'n_jobs':-1, 'random_state':42})
                     );
 
 
-# Le modèle de base produit un f1 macro de 67,5% sur le jeu de validation avec le paramétrage par défaut de sklearn.
+# Le modèle de base produit un f1 macro de **67,5%** sur le jeu de validation avec le paramétrage par défaut de sklearn.
 # On observe le très fort f1 macro sur le jeu d'entraînement qui indique un fort surapprentissage.
 # L'intérêt de ce pipeline est d'être très rapide à l'entraînement (à peine plus de 3 secondes ici)
 
+# In[124]:
+
+
+item = pd.DataFrame([['base_TfIdf_RF_', f1_score(y_val, base_TfIdf_RF_.predict(X_val),average='macro')]], columns=['modèle', 'f1_macro_val'])
+
+item
+
+
+# In[126]:
+
+
+résultats = résultats.append(item)
+résultats
+
+
 # #### variante preprocessing
 
-# In[48]:
+# On peut juger de l'intérêt des prétraitements que nous avons réalisés en changeant le jeu d'entrée :
+# 
+# ![RF_prepro](images/Pipeline_BoW_RF_prepro.png)
+
+# In[127]:
 
 
-X_train_prepro
-
-
-# In[51]:
-
-
-X_val_prepro
-
-
-# In[52]:
+pipe = bow_pipeline
 
 
 base_TfIdf_RF_prepro_= trainPipelineMlFlow(
                             mlf_XP = "Rapport",
                             xp_name_iter = "base_TfIdf_RF_prepro", 
-                            pipeline = bow_pipeline, 
+                            pipeline = pipe, 
                             X_train = X_train_prepro, y_train = y_train, X_test = X_val_prepro, y_test = y_val,
                             target_col = 'sentiment',
-                            fixed_params = {'classifier__random_state':42}
+                            fixed_params = target_params( pipe , {'n_jobs':-1, 'random_state':42})
                         );
 
 
@@ -519,386 +543,340 @@ base_TfIdf_RF_prepro_= trainPipelineMlFlow(
 # On observe tout de suite l'apport des retraitemenst effectués à l'étape EDA : le modèle est passé à une performance de **70,47%** sur le jeu de validation sans autres modifications
 # :::
 
+# In[128]:
+
+
+item = pd.DataFrame([['base_TfIdf_RF_prepro_', f1_score(y_val, base_TfIdf_RF_prepro_.predict(X_val_prepro),average='macro')]], columns=['modèle', 'f1_macro_val'])
+
+item
+
+
+# In[129]:
+
+
+résultats = résultats.append(item)
+résultats
+
+
 # #### variante optimisée
 
-# Une variante consiste à essayer d'ajuster lees hyper paramètres du pipeline dans l'espoire de gagner en performance
+# Une autre variante consiste à essayer d'ajuster les hyper paramètres du pipeline dans l'espoire de gagner en performance.
+# On reste sur le jeu de données prétraité
 
-# In[41]:
-
-
-params = {
-    "tfidf__use_idf": [True, False],
-    "tfidf__ngram_range": [(1, 1), (1, 2), (1,3)],
-    "classifier__bootstrap": [True, False],
-    "classifier__class_weight": ["balanced", None],
-    "classifier__n_estimators": [100, 300, 500, 800, 1200],
-    "classifier__max_depth": [5, 8, 15, 25, 30],
-    "classifier__min_samples_split": [2, 5, 10, 15, 100],
-    "classifier__min_samples_leaf": [1, 2, 5, 10]
-}
-
-trainPipelineMlFlow(
-                    mlf_XP="DSA_Tweets",
-                    xp_name_iter="Bag Of Words - RF-Opti - n_iter_30", 
-                    pipeline=bow_pipeline, 
-                    X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test,
-                    target_col='sentiment',
-                    fixed_params={'classifier__random_state':42},
-                    use_opti=True,
-                    iterable_params=params,
-                    n_iter=30
-                    )
+# In[130]:
 
 
-# ### Bag of Words avec régression logistique
+pipe = bow_pipeline
 
-# In[45]:
+
+params = target_params( pipe , {
+                                "use_idf": [True, False],
+                                "ngram_range": [(1, 1), (1, 2), (1,3)],
+                                "bootstrap": [True, False],
+                                "class_weight": ["balanced", None],
+                                "n_estimators": [100, 300, 500],
+                                })
+
+
+base_TfIdf_RF_prepro_opti_= trainPipelineMlFlow(
+                                            mlf_XP = "Rapport",
+                                            xp_name_iter = "base_TfIdf_RF_prepro_opti", 
+                                            pipeline = bow_pipeline, 
+                                            X_train = X_train_prepro, y_train = y_train, X_test = X_val_prepro, y_test = y_val,
+                                            target_col = 'sentiment',
+                                            fixed_params = target_params( pipe , {'n_jobs':-1, 'random_state':42}),
+                                            use_opti = True,
+                                            iterable_params = params,
+                                            n_iter = 30
+                                      );
+
+
+# L'optimisation a eu ici un gain marginal très faible : f1 amcro de **70,64%** sur le jeu de validation, soit **+0,17%** uniquement, pour un temps de calcul démultiplié (55min vs 3sec)
+
+# In[131]:
+
+
+item = pd.DataFrame([['base_TfIdf_RF_prepro_opti_', f1_score(y_val, base_TfIdf_RF_prepro_opti_.predict(X_val_prepro),average='macro')]], columns=['modèle', 'f1_macro_val'])
+
+item
+
+
+# In[132]:
+
+
+résultats = résultats.append(item)
+résultats
+
+
+# #### Bag of Words avec régression logistique
+
+# Une autre variante : on essaie un autre classifier, la régression logistique
+# 
+# ![bow_pipeline_LR](images/Pipeline_BoW_LR_prepro.png)
+# 
+
+# In[133]:
 
 
 bow_pipeline_LR = Pipeline(
     steps=[
-        ('coltext', TextSelector('text')), #Sélection de la colonne à transformer (corpus)
+        ('coltext', TextSelector('text')), 
         ("tfidf", TfidfVectorizer()),
         ("classifier", LogisticRegression(solver='liblinear', multi_class='auto')),
     ]
 )
 
 
-# In[120]:
+# In[134]:
 
 
 list(bow_pipeline_LR.get_params().keys())
 
 
-# In[54]:
-
-
-params = {
-    "tfidf__use_idf": [True, False],
-    "tfidf__ngram_range": [(1, 1), (1, 2), (1,3)]
-}    
-
-trainPipelineMlFlow(
-                    mlf_XP="DSA_Tweets",
-                    xp_name_iter="Bag Of Words - LR-Opti - n_iter_30", 
-                    pipeline=bow_pipeline_LR, 
-                    X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test,
-                    target_col='sentiment',
-                    fixed_params={'classifier__random_state':42},
-                    use_opti=True,
-                    iterable_params=params,
-                    n_iter=30
-                    )
-
-
-# In[69]:
+# In[135]:
 
 
 pipe = bow_pipeline_LR
 
 
-params = target_params(pipe, {
-    "use_idf": [True, False],
-    "ngram_range": [(1, 1), (1, 2), (1,3), (1,4)]
-})
+params = target_params( pipe , {
+                                "use_idf": [True, False],
+                                "ngram_range": [(1, 1), (1, 2), (1,3)],
+                                "class_weight": [None, 'balanced']
+                                })    
+
+TfIdf_LR_prepro_opti_ = trainPipelineMlFlow(
+                                mlf_XP = "Rapport",
+                                xp_name_iter = "TfIdf_LR_prepro_opti", 
+                                pipeline = pipe, 
+                                X_train = X_train_prepro, y_train = y_train, X_test = X_val_prepro, y_test = y_val,
+                                target_col = 'sentiment',
+                                fixed_params = target_params(pipe, {'n_jobs':-1,'random_state':42}),
+                                use_opti = True,
+                                iterable_params = params,
+                                n_iter=30
+                                );
 
 
+# Le classifier LogisticRegression avec les données retraitées performe moins bien que le RandomForest (**69,86%** sur le jeu de validation).
 
-trainPipelineMlFlow(
-                    mlf_XP="DSA_Tweets",
-                    xp_name_iter="Bag Of Words - LR-Opti - n_iter_30", 
-                    pipeline = pipe, 
-                    X_train = X_train, y_train = y_train, X_test = X_test, y_test = y_test,
-                    target_col = 'sentiment',
-                    fixed_params = target_params(pipe, {'n_jobs':-1,'random_state':42}),
-                    use_opti = True,
-                    iterable_params = params,
-                    n_iter = 30
-                    )
+# In[136]:
 
 
-# In[68]:
+item = pd.DataFrame([['TfIdf_LR_prepro_opti_', f1_score(y_val, TfIdf_LR_prepro_opti_.predict(X_val_prepro),average='macro')]], columns=['modèle', 'f1_macro_val'])
+
+item
 
 
-pipe = bow_pipeline_LR_prepro
+# In[137]:
 
 
-params = target_params(pipe, {
-    "use_idf": [True, False],
-    "ngram_range": [(1, 1), (1, 2), (1,3), (1,4)]
-})
+résultats = résultats.append(item)
+résultats
 
 
+# Afin de vérifier si les données retraitées apprortent quelque chose on relance le même pipeline avec les jeux d'origine
 
-trainPipelineMlFlow(
-                    mlf_XP="DSA_Tweets",
-                    xp_name_iter="Bag Of Words - LR-Opti - n_iter_30", 
-                    pipeline = pipe, 
-                    X_train = X_train, y_train = y_train, X_test = X_test, y_test = y_test,
-                    target_col = 'sentiment',
-                    fixed_params = target_params(pipe, {'n_jobs':-1,'random_state':42}),
-                    use_opti = True,
-                    iterable_params = params,
-                    n_iter = 30
-                    )
+# In[138]:
 
 
-# In[123]:
+pipe = bow_pipeline_LR
 
 
-trainPipelineMlFlow(
-                    mlf_XP="DSA_Tweets",
-                    xp_name_iter="Bag Of Words - LR", 
-                    pipeline=bow_pipeline_LR, 
-                    X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test,
-                    target_col='sentiment',
-                    fixed_params={'classifier__random_state':42}
-                    )
+params = target_params( pipe , {
+                                "use_idf": [True, False],
+                                "ngram_range": [(1, 1), (1, 2), (1,3)],
+                                "class_weight": [None, 'balanced']
+                                })    
+
+TfIdf_LR_opti_ = trainPipelineMlFlow(
+                        mlf_XP = "Rapport",
+                        xp_name_iter = "TfIdf_LR_opti", 
+                        pipeline = pipe, 
+                        X_train = X_train, y_train = y_train, X_test = X_val, y_test = y_val,
+                        target_col = 'sentiment',
+                        fixed_params = target_params(pipe, {'n_jobs':-1,'random_state':42}),
+                        use_opti = True,
+                        iterable_params = params,
+                        n_iter=30
+                        );
 
 
-# ## TextPreprocessor
+# On observe un comportement différent avec la régression logistice. Dans ce cas, c'est l'utilisation du jeu d'origine (avec le tokeniser par défaut de Tf Idf) qui apport de meilleurs résultats (**69,99%** sur le jeu de validation), sans toutefois égaler les performances du RandomForest
 
-# In[78]:
-
-
-from sklearn.base import BaseEstimator, TransformerMixin
-
-class TextPreprocessor(BaseEstimator, TransformerMixin):
-
-    def __init__(self, 
-                 apply_lemmatizer=True,
-                 apply_lowercase=True,
-                 apply_url_standerdisation=True,
-                 apply_user_standerdisation=True,
-                 apply_emoticon_to_words=True,
-                 apply_stopwords_removal=True,
-                 apply_shortwords_removal=True,
-                 apply_non_alphabetical_removal=True,
-                 apply_only_2_consecutive_charac=True):
-        
-        self.apply_lemmatizer = apply_lemmatizer
-        self.apply_lowercase = apply_lowercase
-        self.apply_url_standerdisation = apply_url_standerdisation
-        self.apply_user_standerdisation = apply_user_standerdisation
-        self.apply_emoticon_to_words = apply_emoticon_to_words
-        self.apply_stopwords_removal = apply_stopwords_removal
-        self.apply_shortwords_removal = apply_shortwords_removal
-        self.apply_non_alphabetical_removal = apply_non_alphabetical_removal
-        self.apply_only_2_consecutive_charac = apply_only_2_consecutive_charac
-        
-        
-    def fit(self, X, y=None):
-        return self
-    
-    def transform(self, X):
-        res= preprocess_text(X, 
-                               apply_lemmatizer = self.apply_lemmatizer,
-                               apply_lowercase = self.apply_lowercase,
-                               apply_url_standerdisation = self.apply_url_standerdisation,
-                               apply_user_standerdisation = self.apply_user_standerdisation,
-                               apply_emoticon_to_words = self.apply_emoticon_to_words,
-                               apply_stopwords_removal = self.apply_stopwords_removal,
-                               apply_shortwords_removal = self.apply_shortwords_removal,
-                               apply_non_alphabetical_removal = self .apply_non_alphabetical_removal,
-                               apply_only_2_consecutive_charac = self.apply_only_2_consecutive_charac
-                              )
-        return res
+# In[139]:
 
 
-# In[79]:
+item = pd.DataFrame([['TfIdf_LR_opti_', f1_score(y_val, TfIdf_LR_opti_.predict(X_val),average='macro')]], columns=['modèle', 'f1_macro_val'])
+
+item
 
 
-bow_pipeline_LR_prepro = Pipeline(
-    steps=[
-        ('coltext', TextSelector('text')), #Sélection de la colonne à transformer (corpus)
-        ('prepro', TextPreprocessor()), 
-        ("tfidf", TfidfVectorizer()),
-        ("classifier", LogisticRegression(solver='liblinear', multi_class='auto')),
-    ]
-)
+# In[140]:
 
 
-# In[80]:
+résultats = résultats.append(item)
+résultats
 
 
-list(bow_pipeline_LR_prepro.get_params().keys())
+# Ainsi les méthodes classiques nous aurons permi de gagner 3 points de f1 macro, le leader actuel étant le modèle RandomForest avec un simple BagOfWords (TfIdf=False) et optimisé dans ses paramètres sur le jeu de données prétraité.
+
+# In[142]:
 
 
-# In[81]:
+résultats_trié = résultats.sort_values(by='f1_macro_val',ascending=False)
+résultats_trié
 
 
-trainPipelineMlFlow(
-                    mlf_XP = "DSA_Tweets",
-                    xp_name_iter = "Bag Of Words - LRprepro", 
-                    pipeline = bow_pipeline_LR_prepro, 
-                    X_train = X_train , y_train = y_train , X_test = X_test , y_test = y_test,
-                    target_col = 'sentiment',
-                    fixed_params = target_params(pipe, {'n_jobs': -1, 'random_state':42})
-                    )
+# #### Optimisation du seuil de décision pour maximiser le f1
 
-
-# In[35]:
-
-
-target_params(bow_pipeline_LR_prepro, {'n_jobs': -1, 'random_state':42})
-
-
-# In[82]:
-
-
-pipe = bow_pipeline_LR_prepro
-
-trainPipelineMlFlow(
-                    mlf_XP = "DSA_Tweets",
-                    xp_name_iter = "Bag Of Words - LRprepro", 
-                    pipeline = pipe, 
-                    X_train = X_train, y_train = y_train, X_test = X_test, y_test = y_test,
-                    target_col = 'sentiment',
-                    fixed_params = target_params(pipe, {'n_jobs': -1, 'random_state':42, 'apply_emoticon_to_words':False})
-                    )
-
-
-# ### Ici
-
-# params = target_params(pipe, {'apply_emoticon_to_words': [True, False]
-#                               ,
-#                               'apply_lemmatizer': [True, False],
-#                               'apply_lowercase': [True, False],
-#                               'apply_non_alphabetical_removal': [True, False],
-#                               'apply_shortwords_removal': [True, False],
-#                               'apply_stopwords_removal': [True, False],
-#                               'apply_url_standerdisation': [True, False],
-#                               'apply_user_standerdisation': [True, False]
-#                               })
+# On peut aussi tirer avantage de la métrique utilisée pour l'évaluation. En effet, parmi les 3 catégories recherchées (`negative`, `neutral` et `positive`) il existe une gradation et en définitive, on est surtout intéressés à déterminer qsi un commentaire est positif ou négatif. La classification neutre étant une catégorie "par défaut" sans marqueur fort. 
 # 
+# Stratégie : on maximise sur le jeu d'entraînement le seuil pour la décision positive, puis sur les non positifs, on maximise le seuil pour les négatifs, le reste est neutre
 
-# In[85]:
-
-
-pipe = bow_pipeline_LR
+# In[151]:
 
 
-params = target_params(pipe, 
-                       {"use_idf": [True, False]}
-                      )
+# permet de prendre une décision à partir d'un seuil
+def to_labels(pos_probs, threshold):
+    return (pos_probs >= threshold).astype('int')
 
 
-pipe = bow_pipeline_LR_prepro
-
-trainPipelineMlFlow(
-                    mlf_XP = "DSA_Tweets",
-                    xp_name_iter = "Bag Of Words - LRprepro - Opti", 
-                    pipeline = pipe, 
-                    X_train = X_train, y_train = y_train, X_test = X_test, y_test = y_test,
-                    target_col = 'sentiment',
-                    fixed_params = target_params(pipe, {'n_jobs': -1, 'random_state':42}),
-                    use_opti = True,
-                    iterable_params = params
-                    )
+# In[152]:
 
 
-# In[164]:
+def find_optimal_f1_thresholds(pipe, X, y):
+    
+    probs = pipe.predict_proba(X)
+    
+    # On commence par travailler les prédictions positives
+    pos_probs = probs[:,2]
+    # On définit une échelle de seuils
+    thresholds = np.arange(0, 1, 0.001)
+    # On évalue le f1 pour chaque seuil
+    scores = [f1_score([(1 if i==1 else 0) for i in y ], to_labels(pos_probs, t)) for t in thresholds]
+    # On récupère le seuil optimal pour la catégorie positive
+    ix = np.argmax(scores)
+
+    
+    res = {'pos_threshold' : thresholds[ix], 'pos_f1' : scores[ix] }
+    
+    # On continue avec les prédictions négatives
+    neg_probs = probs[:,0]
+    # On définit une échelle de seuils
+    thresholds = np.arange(0, 1, 0.001)
+    # On évalue le f1 pour chaque seuil
+    scores = [f1_score([(1 if i==-1 else 0) for i in y ], to_labels(neg_probs, t)) for t in thresholds]
+    # On récupère le seuil optimal pour la catégorie positive
+    ix = np.argmax(scores)
+
+    
+    res.update({'neg_threshold' : thresholds[ix], 'neg_f1' : scores[ix] })
+    
+    return res
+    
 
 
-pipe = bow_pipeline_LR_prepro
-
-params = target_params(pipe, {'apply_emoticon_to_words': [True, False],
-                              'apply_lemmatizer': [True, False],
-                              'apply_lowercase': [True, False],
-                              'apply_non_alphabetical_removal': [True, False],
-                              'apply_shortwords_removal': [True, False],
-                              'apply_stopwords_removal': [True, False],
-                              'apply_url_standerdisation': [True, False],
-                              'apply_user_standerdisation': [True, False]
-                              })
-
-params
+# In[155]:
 
 
-# In[89]:
+# startégie : on commence par décider si positif,
+# sur les non positifs
+
+def sentiment_predict(pipe, X, dict_thres):
+    '''
+    stratégie :  on commence par décider si positif,
+                 sur les non positifs, on décide si négatifs,
+                 les restants sont neutres
+    '''
+    
+    
+    
+    seuil_pos=dict_thres['pos_threshold']
+    seuil_neg=dict_thres['neg_threshold']
+
+    probs = pipe.predict_proba(X)
+
+    y_test_pred_pos = to_labels(probs[:,2], seuil_pos)
+    y_test_pred_neg = to_labels(probs[:,0], seuil_neg)
+
+    y_test_pred = y_test_pred_pos
+    y_test_pred[(y_test_pred_pos==0)] = -y_test_pred_neg[(y_test_pred_pos==0)]
+    return y_test_pred
 
 
-pipe = bow_pipeline_LR_prepro
+# In[146]:
 
 
-params = target_params(pipe, {
-    "use_idf": [True, False]
-})
+thres = find_optimal_f1_thresholds(base_TfIdf_RF_prepro_opti_, X_train_prepro, y_train['sentiment'])
 
 
-
-trainPipelineMlFlow(
-                    mlf_XP="DSA_Tweets",
-                    xp_name_iter="Bag Of Words - LR-Opti - n_iter_30", 
-                    pipeline = pipe, 
-                    X_train = X_train, y_train = y_train, X_test = X_test, y_test = y_test,
-                    target_col = 'sentiment',
-                    fixed_params = target_params(pipe, {'n_jobs':-1,'random_state':42}),
-                    use_opti = True,
-                    iterable_params = params,
-                    n_iter = 30
-                    )
+# In[147]:
 
 
-# In[102]:
+thres
 
 
-X_train_prepro = pd.DataFrame(preprocess_text(X_train['text']), columns=['text'])
+# In[149]:
 
 
-# In[103]:
+y_val_pred = sentiment_predict(base_TfIdf_RF_prepro_opti_, X_val_prepro,thres)
 
 
-X_train_prepro
+# In[150]:
 
 
-# In[104]:
+f1_score(y_val, y_val_pred, average='macro')
 
 
-X_test_prepro = pd.DataFrame(preprocess_text(X_test['text']), columns=['text'])
+# Le gain est modeste (**+0,30%**), mais reste dans les ordres de grandeur des optimisations de pipeline
+
+# In[156]:
 
 
-# In[105]:
+item = pd.DataFrame([['TfIdf_LR_opti_modif_seuil', f1_score(y_val, y_val_pred, average='macro')]], columns=['modèle', 'f1_macro_val'])
+
+item
 
 
-X_test
+# In[157]:
 
 
-# In[106]:
+résultats = résultats.append(item).sort_values(by='f1_macro_val',ascending=False)
+résultats
 
 
-pipe = bow_pipeline_LR
+# ### Approches par transformers pré entraînés 
 
+# Le traiteùent du langage est un sujet notoirement complexe. Les approches classiques utilisées précédement s'appuyaient sur des approches fréquentistes (Tf Idf / Bag Of Words) et le retraitement manuel de certains aspects (URL, utilisateurs cités etc.).
+# 
+# Une méthode qui a fait ses preuves ces dernières années est l'utilisation du Deep Learning de manière générale et de l'architecture [BERT](https://fr.wikipedia.org/wiki/BERT_(mod%C3%A8le_de_langage)) en particulier.
+# 
+# <div>
+# <img src=https://www.codemotion.com/magazine/wp-content/uploads/2020/05/bert-google.png width="400"/>
+# </div>
+# 
+# Dans un mode de fonctionnement optimal, on devrait reprndre BERT et réentrainer la dernière couche uniquement pour le sujet de classification étudié.
+# Pour des raisons de temps et de compétence, ce n'est pas l'approche prise ici.
+# 
+# Dans ce rapport, nous avons repris un modèle pré-entrainé dérivé de BERT et mis à disposition par [HuggingFace](https://huggingface.co/)
+# 
+# ![HuggingFace](https://huggingface.co/front/assets/huggingface_logo.svg)
+# 
+# Plus précisement, le choix s'est porté sur le modèle [roBERTa](https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment) optimisé pour la tâche de classification de sentiment de Twitter
+# 
+# La difficulté principale rencontrée pour utiliser ce modèle a été d'adapter le fonctionnement du docker compose pour permettre l'accès aux ressources GPU du PC. Dans l'alternative, le temps de traitement était rédhibitoire. 
 
-params = target_params(pipe, {
-    "use_idf": [True, False]
-})
+# #### Mise en place de l'environnement
 
-
-
-trainPipelineMlFlow(
-                    mlf_XP="DSA_Tweets",
-                    xp_name_iter="Bag Of Words - LR-prepro", 
-                    pipeline = pipe, 
-                    X_train = X_train_prepro, y_train = y_train, X_test = X_test_prepro, y_test = y_test,
-                    target_col = 'sentiment',
-                    fixed_params = target_params(pipe, {'n_jobs':-1,'random_state':42}),
-                    use_opti = True,
-                    iterable_params = params,
-                    n_iter = 30
-                    )
-
-
-# # PyTorch
-
-# In[29]:
+# In[159]:
 
 
 import torch
 torch.cuda.is_available()
 
 
-# In[30]:
+# In[160]:
 
 
 from transformers import AutoModelForSequenceClassification
@@ -913,7 +891,7 @@ import csv
 import urllib.request
 
 
-# In[31]:
+# In[161]:
 
 
 
@@ -929,7 +907,11 @@ def preprocess(text):
     return " ".join(new_text)
 
 
-# In[32]:
+# Les modèles sont assez lourds (environ 500Mo)
+# 
+# Après avoir été téléchargé, il est important de réutiliser les documents sur disque
+
+# In[162]:
 
 
 task='sentiment'
@@ -940,7 +922,7 @@ tokenizer = AutoTokenizer.from_pretrained('/mnt/pretrained_models/'+MODEL)
 config = AutoConfig.from_pretrained('/mnt/pretrained_models/'+MODEL)
 
 
-# In[33]:
+# In[163]:
 
 
 # download label mapping
@@ -952,13 +934,13 @@ with urllib.request.urlopen(mapping_link) as f:
 labels = [row[1] for row in csvreader if len(row) > 1]
 
 
-# In[34]:
+# In[164]:
 
 
 nlp=pipeline("sentiment-analysis", model=model, tokenizer=tokenizer, device=0, return_all_scores=True)
 
 
-# In[35]:
+# In[165]:
 
 
 def TorchTwitterRoBERTa_Pred(text = "Good night 😊"):
@@ -974,14 +956,18 @@ def TorchTwitterRoBERTa_Pred(text = "Good night 😊"):
     return neg, neu, pos
 
 
-# In[36]:
+# In[166]:
 
 
 test = TorchTwitterRoBERTa_Pred()
 test
 
 
-# In[37]:
+# La partie précédente permettait de transcrire le code de Huggingface.
+# 
+# Néanmoins l'utilisation pour faire des prédictions sur l'intégralité d'une base peut vite être longue. Le code suivant permet d'optimiser le temps de parcours des données.
+
+# In[167]:
 
 
 def run_loopy_roBERTa(df):
@@ -997,23 +983,33 @@ def run_loopy_roBERTa(df):
     return df_result
 
 
-# In[38]:
+# Afin d'utiliser la logique des pipelines, on crée une classe spécifique :
+
+# In[168]:
 
 
 class clTwitterroBERTa(BaseEstimator, TransformerMixin):
+    
     def __init__(self, field):
         self.field = field
+        
     def fit(self, X, y=None):
         return self
+    
     def transform(self, X):
         res = run_loopy_roBERTa(X[[self.field]])
-        
-        #self.res[['roBERTa_neg', 'roBERTa_neu', 'roBERTa_pos']] =  X[self.field].apply(lambda x : TorchTwitterRoBERTa_Pred(x)).apply(pd.Series)
         return res
-        #return self.res
 
 
-# In[39]:
+# #### roBERTa Twitter Sentiment
+
+# On dispose désormais de tous les éléments nécessaires.
+# roBERTa ayant été entraîné sur 58M de tweets en anglais, nous n'avons pas à appliquer de preprocessing en dehors de la standardisation des adresses et utilisateurs prévus par défaut dans le code de Huggingface.
+# 
+# ![roBERTa_RF](images/Pipeline_roBERTa_RF.png)
+# 
+
+# In[172]:
 
 
 roBERTa_pipe=Pipeline([
@@ -1021,7 +1017,7 @@ roBERTa_pipe=Pipeline([
                     ])
 
 
-# In[40]:
+# In[173]:
 
 
 roBERTa_RF_Pipe = Pipeline(
@@ -1032,25 +1028,46 @@ roBERTa_RF_Pipe = Pipeline(
 )
 
 
-# In[130]:
+# In[174]:
 
 
 pipe = roBERTa_RF_Pipe
 
 
-trainPipelineMlFlow(
-                    mlf_XP="DSA_Tweets",
-                    xp_name_iter="roBERTa - LR", 
+roBERTa_RF_= trainPipelineMlFlow(
+                    mlf_XP = "Rapport",
+                    xp_name_iter = "roBERTa_RF", 
                     pipeline = pipe, 
-                    X_train = X_train, y_train = y_train, X_test = X_test, y_test = y_test,
+                    X_train = X_train, y_train = y_train, X_test = X_val, y_test = y_val,
                     target_col = 'sentiment',
                     fixed_params = target_params(pipe, {'n_jobs':-1,'random_state':42})
-                    )
+                    );
 
 
-# ### Transformation des données par roBERTa
+# In[175]:
 
-# In[133]:
+
+item = pd.DataFrame([['roBERTa_RF_', f1_score(y_val, roBERTa_RF_.predict(X_val), average='macro')]], columns=['modèle', 'f1_macro_val'])
+
+item
+
+
+# In[176]:
+
+
+résultats = résultats.append(item).sort_values(by='f1_macro_val',ascending=False)
+résultats
+
+
+# Sans optimisation, le modèle utilisant roBERTa tweet ne se place qu'en 3ème position, ce qui est en deça des attentes a priori.
+
+# Par ailleurs, la quantité de mémoire vive à disposition sur la carte étant limitée, il n'a pas été possible d'effectuer une optimisation directe du pipeline, celle-ci créant des dépassements de mémoire.
+# 
+# C'est pourquoi la phase de prédiction par roBERTa tweet a été isolée (celle-ci ne présentant par ailleurs aps de possibilité de paramétrage) afin de laisser le seul classifier dans l'optimisation.
+
+# #### roBERTa Twitter Sentiment optimisé
+
+# In[178]:
 
 
 import gc
@@ -1060,45 +1077,34 @@ gc.collect()
 torch.cuda.empty_cache()
 
 
-# In[41]:
-
-
-import torch
-torch.cuda.empty_cache()
-
-
-# In[42]:
+# In[179]:
 
 
 X_train_roBERTa = roBERTa_pipe.transform(X_train)
-
-
-# In[43]:
-
-
-X_train_roBERTa
-
-
-# In[44]:
-
-
+X_val_roBERTa = roBERTa_pipe.transform(X_val)
 X_test_roBERTa = roBERTa_pipe.transform(X_test)
 
 
-# In[72]:
+# In[237]:
+
+
+X_train_roBERTa = X_train_roBERTa.set_index(X_train.index)
+X_val_roBERTa = X_val_roBERTa.set_index(X_val.index)
+X_test_roBERTa = X_test_roBERTa.set_index(X_test.index)
+X_train_roBERTa
+
+
+# In[238]:
 
 
 X_train_roBERTa.to_parquet('/mnt/data/interim/X_train_roBERTa.gzip',compression='gzip')
+X_val_roBERTa.to_parquet('/mnt/data/interim/X_val_roBERTa.gzip',compression='gzip')
 X_test_roBERTa.to_parquet('/mnt/data/interim/X_test_roBERTa.gzip',compression='gzip')
 
 
-# In[ ]:
+# ![roBERTa_prepro](images/Pipeline_roBERTa_prepro_RF.png)
 
-
-
-
-
-# In[45]:
+# In[181]:
 
 
 roBERTa_RF = Pipeline(
@@ -1108,7 +1114,7 @@ roBERTa_RF = Pipeline(
 )
 
 
-# In[57]:
+# In[233]:
 
 
 pipe = roBERTa_RF
@@ -1123,26 +1129,49 @@ params = target_params(pipe, {
 })
 
 
-roBERTa_RF_=trainPipelineMlFlow(
-                    mlf_XP="DSA_Tweets",
-                    xp_name_iter="roBERTa - RF - opti - 30", 
+roBERTa_RF_opti_ = trainPipelineMlFlow(
+                    mlf_XP = "Rapport",
+                    xp_name_iter="roBERTa_RF_opti", 
                     pipeline = pipe, 
-                    X_train = X_train_roBERTa, y_train = y_train, X_test = X_test_roBERTa, y_test = y_test,
+                    X_train = X_train_roBERTa, y_train = y_train, X_test = X_val_roBERTa, y_test = y_val,
                     target_col = 'sentiment',
                     fixed_params = target_params(pipe, {'n_jobs':-1,'random_state':42}),
                     use_opti = True,
                     iterable_params=params,
                     n_iter=30
-                    )
+                    );
 
 
-# ### roBERTa + xgBoost
+# Le modèle, une fois optimisé, arrive en haut du classement avec un gain de persque **+4%** de f1 pour atteindre **74,66%** sur le jeu de validation
 
-# https://skimai.com/fine-tuning-bert-for-sentiment-analysis/
+# In[183]:
 
-# ### Essai combinaison de différentes méthodes
 
-# In[48]:
+item = pd.DataFrame([['roBERTa_RF_opti_', f1_score(y_val, roBERTa_RF_opti_.predict(X_val_roBERTa), average='macro')]], columns=['modèle', 'f1_macro_val'])
+
+item
+
+
+# In[184]:
+
+
+résultats = résultats.append(item).sort_values(by='f1_macro_val',ascending=False)
+résultats
+
+
+# #### Essai combinaison de différentes méthodes
+
+# Afin de gagner encore en performance, il est possible de combiner plusieurs outils d'estimation de sentimenst a priori. Ces transformations ne relevant pas des mêmes stratégies, elles capturent des éléments légèrement différents.
+# 
+# Les méthodes sélectionnées ici pour leur simplicité d'utilisation sont :
+# - [TextBlob](https://textblob.readthedocs.io/en/dev/quickstart.html)
+# - [Vader](http://comp.social.gatech.edu/papers/icwsm14.vader.hutto.pdf)
+# 
+# ![roBERTa_Blob_Vader](images/Pipeline_roBERTa_Blob_Vader_prepro_RF.png)
+# 
+# 
+
+# In[186]:
 
 
 class Blob(BaseEstimator, TransformerMixin):
@@ -1155,7 +1184,7 @@ class Blob(BaseEstimator, TransformerMixin):
         return X[['polarity', 'subjectivity']]
 
 
-# In[49]:
+# In[187]:
 
 
 blob_pipe=Pipeline([
@@ -1163,28 +1192,55 @@ blob_pipe=Pipeline([
                     ])
 
 
-# In[50]:
+# In[188]:
 
 
 X_train_Blob=blob_pipe.transform(X_train)
+X_val_Blob=blob_pipe.transform(X_val)
+X_test_Blob=blob_pipe.transform(X_test)
+
+
+# In[189]:
+
+
 X_train_Blob.head()
 
 
-# In[51]:
-
-
-X_test_Blob=blob_pipe.transform(X_test)
-X_test_Blob.head()
-
-
-# In[73]:
+# In[190]:
 
 
 X_train_Blob.to_parquet('/mnt/data/interim/X_train_Blob.gzip',compression='gzip')
+X_val_Blob.to_parquet('/mnt/data/interim/X_val_Blob.gzip',compression='gzip')
 X_test_Blob.to_parquet('/mnt/data/interim/X_test_Blob.gzip',compression='gzip')
 
 
-# In[52]:
+# On vérifie que TextBlob et roBERTa ne capturent pas les mêmes éléments.
+# 
+# TextBlob fournissant un indicateur global, on approxime les sentiments de rBERTa comme `positive` - `negative`
+
+# In[204]:
+
+
+X =pd.DataFrame(columns=['roBERTa_sent'])
+X['roBERTa_sent'] = X_train_roBERTa['roBERTa_pos']- X_train_roBERTa['roBERTa_neg']
+X2 = pd.concat([X, X_train_Blob[['polarity']]], axis=1)
+X2.corr()
+
+
+# In[194]:
+
+
+fig = px.scatter(x = X_train_roBERTa['roBERTa_pos']- X_train_roBERTa['roBERTa_neg'], 
+                 y = X_train_Blob['polarity'],
+                labels = {
+                     'x': 'roBERTa',
+                     'y' : 'TextBLob - polarity',
+                 },
+                title = 'Comparaison des sentiments roBERTa vs TextBlob')
+fig.show()
+
+
+# In[207]:
 
 
 class Vader(BaseEstimator, TransformerMixin):
@@ -1199,7 +1255,7 @@ class Vader(BaseEstimator, TransformerMixin):
         return X[['neg', 'neu', 'pos', 'compound']]
 
 
-# In[53]:
+# In[208]:
 
 
 vader_pipe=Pipeline([
@@ -1207,47 +1263,123 @@ vader_pipe=Pipeline([
                     ])
 
 
-# In[54]:
+# In[209]:
 
 
 X_train_Vader=vader_pipe.transform(X_train)
+X_val_Vader=vader_pipe.transform(X_val)
+X_test_Vader=vader_pipe.transform(X_test)
+
+
+# In[210]:
+
+
 X_train_Vader.head()
 
 
-# In[55]:
-
-
-X_test_Vader=vader_pipe.transform(X_test)
-X_test_Vader.head()
-
-
-# In[74]:
+# In[211]:
 
 
 X_train_Vader.to_parquet('/mnt/data/interim/X_train_Vader.gzip',compression='gzip')
+X_val_Vader.to_parquet('/mnt/data/interim/X_val_Vader.gzip',compression='gzip')
 X_test_Vader.to_parquet('/mnt/data/interim/X_test_Vader.gzip',compression='gzip')
 
 
-# In[56]:
+# On vérifie de la même manière que Vader et roBERTa ne capturent pas les mêmes éléments.
+
+# Pour les positifs
+
+# In[213]:
+
+
+X_pos = pd.concat([X_train_roBERTa[['roBERTa_pos']], X_train_Vader[['pos']]], axis=1)
+X_pos.corr()
+
+
+# In[214]:
+
+
+fig = px.scatter(x = X_train_roBERTa['roBERTa_pos'], 
+                 y = X_train_Vader['pos'],
+                labels = {
+                     'x': 'roBERTa',
+                     'y' : 'Vader',
+                 },
+                title = 'Comparaison des sentiments roBERTa vs Vaders - positive')
+fig.show()
+
+
+# Pour les neutres
+
+# In[215]:
+
+
+X_pos = pd.concat([X_train_roBERTa[['roBERTa_neu']], X_train_Vader[['neu']]], axis=1)
+X_pos.corr()
+
+
+# In[216]:
+
+
+fig = px.scatter(x = X_train_roBERTa['roBERTa_neu'], 
+                 y = X_train_Vader['neu'],
+                labels = {
+                     'x': 'roBERTa',
+                     'y' : 'Vader',
+                 },
+                title = 'Comparaison des sentiments roBERTa vs Vaders - neutral')
+fig.show()
+
+
+# Pour les négatifs
+
+# In[217]:
+
+
+X_pos = pd.concat([X_train_roBERTa[['roBERTa_neg']], X_train_Vader[['neg']]], axis=1)
+X_pos.corr()
+
+
+# In[218]:
+
+
+fig = px.scatter(x = X_train_roBERTa['roBERTa_neg'], 
+                 y = X_train_Vader['neg'],
+                labels = {
+                     'x': 'roBERTa',
+                     'y' : 'Vader',
+                 },
+                title = 'Comparaison des sentiments roBERTa vs Vaders - negative')
+fig.show()
+
+
+# On peut alors calculer la base agrégée
+
+# In[239]:
 
 
 X_train_compound = pd.concat([X_train_roBERTa, X_train_Blob, X_train_Vader], axis=1)
+X_val_compound = pd.concat([X_val_roBERTa, X_val_Blob, X_val_Vader], axis=1)
 X_test_compound = pd.concat([X_test_roBERTa, X_test_Blob, X_test_Vader], axis=1)
 
 
-# In[57]:
+# In[240]:
 
 
 X_train_compound.head()
 
 
-# In[58]:
+# In[241]:
 
 
-X_test_compound.head()
+X_val_compound.head()
 
 
-# In[105]:
+# :::{tip}
+# Comme on travaille avec des arbres il n'y a pas besoin de renormer / standardiser les différentes colonnes
+# :::
+
+# In[242]:
 
 
 pipe = roBERTa_RF
@@ -1262,26 +1394,52 @@ params = target_params(pipe, {
 })
 
 
-roBERTa_RF_=trainPipelineMlFlow(
-                    mlf_XP="DSA_Tweets",
-                    xp_name_iter="roBERTa_Blob_Vader - RF - opti - 30", 
-                    pipeline = pipe, 
-                    X_train = X_train_compound, y_train = y_train, X_test = X_test_compound, y_test = y_test,
-                    target_col = 'sentiment',
-                    fixed_params = target_params(pipe, {'n_jobs':-1,'random_state':42}),
-                    use_opti = True,
-                    iterable_params=params,
-                    n_iter=30
-                    )
+roBERTa_Blob_Vader_RF_opti_ = trainPipelineMlFlow(
+                                    mlf_XP="Rapport",
+                                    xp_name_iter="roBERTa_Blob_Vader_RF_opti", 
+                                    pipeline = pipe, 
+                                    X_train = X_train_compound, y_train = y_train, X_test = X_val_compound, y_test = y_val,
+                                    target_col = 'sentiment',
+                                    fixed_params = target_params(pipe, {'n_jobs':-1,'random_state':42}),
+                                    use_opti = True,
+                                    iterable_params = params,
+                                    n_iter = 30
+                                    );
 
 
-# In[70]:
+# In[243]:
+
+
+item = pd.DataFrame([['roBERTa_Blob_Vader_RF_opti_', f1_score(y_val, roBERTa_Blob_Vader_RF_opti_.predict(X_val_compound), average='macro')]], columns=['modèle', 'f1_macro_val'])
+
+item
+
+
+# In[244]:
+
+
+résultats = résultats.append(item).sort_values(by='f1_macro_val',ascending=False)
+résultats
+
+
+# :::{note}
+# L'utilisation de Vader et Blob en soutien de roBERTa a permi de gagner 1 point de f1 sur le jeu de validation         
+# :::
+
+# ### Essai xgboost sur combinaison de méthodes
+
+# Dans ce dernier essai on remplace le RandomClassifier par un XGBoost
+# 
+# ![xgb](images/Pipeline_roBERTa_Blob_Vader_prepro_xgb.png)
+# 
+
+# In[253]:
 
 
 import xgboost as xgb
 
 
-# In[69]:
+# In[254]:
 
 
 roBERTa_xgb = Pipeline(
@@ -1291,7 +1449,7 @@ roBERTa_xgb = Pipeline(
 )
 
 
-# In[60]:
+# In[255]:
 
 
 pipe = roBERTa_xgb
@@ -1305,17 +1463,228 @@ params = target_params(pipe, {
      })
 
 
-roBERTa_xgb_ = trainPipelineMlFlow(
+roBERTa_xgb_opti_ = trainPipelineMlFlow(
                     mlf_XP="DSA_Tweets",
                     xp_name_iter="roBERTa - xgb - opti", 
                     pipeline = pipe, 
-                    X_train = X_train_compound, y_train = y_train, X_test = X_test_compound, y_test = y_test,
+                    X_train = X_train_compound, y_train = y_train, X_test = X_val_compound, y_test = y_val,
                     target_col = 'sentiment',
                     fixed_params = target_params(pipe, {'n_jobs':-1,'random_state':42}),
                     use_opti = True,
                     iterable_params=params,
                     n_iter=20
                     )
+
+
+# In[258]:
+
+
+item = pd.DataFrame([['roBERTa_xgb_opti_', f1_score(y_val, roBERTa_xgb_opti_.predict(X_val_compound), average='macro')]], columns=['modèle', 'f1_macro_val'])
+
+item
+
+
+# In[259]:
+
+
+résultats = résultats.append(item).sort_values(by='f1_macro_val',ascending=False)
+résultats
+
+
+# In[266]:
+
+
+résultats_fin = résultats
+#.set_index(résultats['modèle']).drop('modèle', axis=1)
+
+
+# In[267]:
+
+
+résultats_fin
+
+
+# ### Soumission finale
+
+# On réentraine les 3 modèles finalistes sur le jeu de validation sur l'intégralité de `tain + val` et on évalue sur le jeu de test
+
+# :::{warning}
+# Ici on réajuste uniquement les modèles sans explorer de nouvelles vvaleur d'hyperparamètres
+# :::
+
+# In[250]:
+
+
+y_train_tot = pd.concat([y_train, y_val], axis=0)
+
+
+# In[247]:
+
+
+X_train_compound_tot = pd.concat([X_train_compound, X_val_compound], axis=0)
+
+
+# In[248]:
+
+
+X_train_compound_tot
+
+
+# In[252]:
+
+
+pipe = roBERTa_RF
+
+params = target_params(pipe, {
+    'n_jobs':-1,
+    'random_state':42,
+    'n_estimators': 500, 
+    'classifier__min_samples_split': 15, 
+    'classifier__min_samples_leaf': 10, 
+    'classifier__max_depth': 15, 
+    'classifier__class_weight': None, 
+    'classifier__bootstrap': True
+})
+
+
+roBERTa_Blob_Vader_RF_opti_tot_ = trainPipelineMlFlow(
+                                        mlf_XP="Rapport",
+                                        xp_name_iter="roBERTa_Blob_Vader_RF_opti_tot", 
+                                        pipeline = pipe, 
+                                        X_train = X_train_compound_tot, y_train = y_train_tot, X_test = X_test_compound, y_test = y_test,
+                                        target_col = 'sentiment',
+                                        fixed_params = params,
+                                        use_opti = False,
+                                        );
+
+
+# In[276]:
+
+
+item = pd.DataFrame([['roBERTa_Blob_Vader_RF_opti_', f1_score(y_test, roBERTa_Blob_Vader_RF_opti_tot_.predict(X_test_compound), average='macro')]], columns=['modèle', 'f1_macro_test'])
+
+item
+
+
+# In[277]:
+
+
+res_fin=item
+
+
+# In[ ]:
+
+
+
+
+
+# In[257]:
+
+
+pipe = roBERTa_xgb
+
+params = target_params(pipe, {
+                'n_jobs': -1, 
+                'random_state': 42, 
+                'min_child_weight': 3, 
+                'max_depth': 4, 
+                'gamma': 0.1, 
+                'colsample_bytree': 0.5
+     })
+
+
+roBERTa_xgb_opti_tot_ = trainPipelineMlFlow(
+                    mlf_XP="DSA_Tweets",
+                    xp_name_iter="roBERTa - xgb - opti", 
+                    pipeline = pipe, 
+                    X_train = X_train_compound_tot, y_train = y_train_tot, X_test = X_test_compound, y_test = y_test,
+                    target_col = 'sentiment',
+                    fixed_params = params,
+                    use_opti = False
+                    );
+
+
+# In[278]:
+
+
+item = pd.DataFrame([['roBERTa_xgb_opti_', f1_score(y_test, roBERTa_xgb_opti_tot_.predict(X_test_compound), average='macro')]], columns=['modèle', 'f1_macro_test'])
+
+item
+
+
+# In[283]:
+
+
+res_fin=res_fin.append(item)
+
+
+# In[287]:
+
+
+res_fin2=pd.merge(résultats, res_fin, how='left', on='modèle')
+res_fin2
+
+
+# In[288]:
+
+
+résultats.to_parquet('/mnt/data/processed/résultats.gzip',compression='gzip')
+res_fin.to_parquet('/mnt/data/processed/res_fin.gzip',compression='gzip')
+res_fin2.to_parquet('/mnt/data/processed/res_fin2.gzip',compression='gzip')
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
 
 
 # In[ ]:
