@@ -38,4 +38,10 @@ res_fin2
 # Enfin ce sujet a été l'occasion de se frotter à plusieurs difficultés techniques liées principalement :
 # - à l'utilisation de ressources GPU depuis docker
 # - à l'utilisation des GPU pour XGBoost (non pris en compte par défaut)
-# - aux pipelines sklearn, pratiques mais pas toujousr compatibles avec les packages (ex SHAP) et nécessitant souvent des créations de classes ad-hoc
+# - aux pipelines sklearn, pratiques mais pas toujours compatibles avec les packages (ex SHAP) et nécessitant souvent des créations de classes ad-hoc
+
+# In[ ]:
+
+
+
+
