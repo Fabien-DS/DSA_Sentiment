@@ -291,7 +291,7 @@ def plot_cm(y_test, y_pred, target_names=[-1, 0, 1],
 # La fonction suivante est celle qui sera systématiquement appélée pour entraîner les pipelines
 
 # :::{tip}
-# L'évaluation fianle des modèles se faisant sur base de f1-macro dans le TD, c'est la métrique que nosu avons retenue pour la partie optimisation de la fonction générique
+# L'évaluation fianle des modèles se faisant sur base de f1-macro dans le TD, c'est la métrique que nous avons retenue pour la partie optimisation de la fonction générique
 # :::
 
 # In[8]:
@@ -477,7 +477,7 @@ def plotWc(text, stopwords=None, title=''):
 
 # :::{warning}
 # 
-# Dans cette première étape, nous travaillerons sur le jeu `train` que nous avon découpé et évaluerons ses performances sur le jeu `val`.
+# Dans cette première étape, nous travaillerons sur le jeu `train` que nous avons découpé et évaluerons ses performances sur le jeu `val`.
 # 
 # Seuls les principaux modèles seront réentrainés sur `{ train + val }` avant d'être évalués sur le véritable jeu `test`
 # 
@@ -593,7 +593,7 @@ exemples_realPos_predNeg
 plotWc(" ".join(exemples_realPos_predNeg['text']), stopwords=stopwords.words('english'), title = "Wordcloud des tweets positifs prédits négatifs")
 
 
-# pour essayer de comprendre ce qu'il s'est passé sur l'instance 22238, on peut essayer d'analyser le résultat à partir de Lime :
+# pour essayer de comprendre ce qu'il s'est passé sur l'instance 25367, on peut essayer d'analyser le résultat à partir de Lime :
 
 # In[309]:
 

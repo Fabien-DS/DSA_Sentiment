@@ -91,9 +91,12 @@ target/
 /logs/*
 !/logs/.gitkeep
 /venv/*
+*.bin
 
 # exclude pretrained models
 /pretrained_models/*
 
 # Mac OS-specific storage files
 .DS_Store
+
+
