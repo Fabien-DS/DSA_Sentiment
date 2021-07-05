@@ -1,0 +1,2685 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>5. Un dernier Essai : BERT &#8212; DSA 2021 - TD Sentiment Twitter</title>
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6. Enseignements et pistes d’amélioration" href="5-%20Enseignements.html" />
+    <link rel="prev" title="4. Modélisation" href="test%204-mod.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+      <img src="../_static/assoc_nlogo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">DSA 2021 - TD Sentiment Twitter</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../intro.html">
+   TD Antoine LY : rapport de Fabien FAIVRE
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Consignes
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="consignes.html">
+   1. Consignes
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Analyse
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="1-strat%C3%A9gie.html">
+   1. Description du projet et de la stratégie a priori
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="2-Chargement_initial_des_donn%C3%A9es.html">
+   2. Chargement initial des données
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="3-analyse_descriptive.html">
+   3. Analyse descriptive
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="test%204-mod.html">
+   4. Modélisation
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   5. Un dernier Essai : BERT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="5-%20Enseignements.html">
+   6. Enseignements et pistes d’amélioration
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/notebooks/nn.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/executablebooks/jupyter-book"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2Fnotebooks/nn.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/docs/notebooks/nn.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="../_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        
+    </div>
+</div>
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#chargement-des-donnees">
+   5.1. Chargement des données
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#definition-du-device-a-utiliser-et-fixation-de-la-graine">
+   5.2. Définition du Device à utiliser et fixation de la graîne
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exploration-pour-l-analyse-de-sentiment">
+   5.3. Exploration pour l’analyse de sentiment
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#code-generique">
+     5.3.1. Code générique
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#donnees">
+     5.3.2. Données
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#bert">
+     5.3.3. BERT
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#single-model">
+       5.3.3.1. Single Model
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#distilbert">
+     5.3.4. DistilBERT
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id1">
+       5.3.4.1. Single Model
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#fold-cv">
+       5.3.4.2. 10-Fold CV
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#roberta">
+     5.3.5. RoBERTa
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id2">
+       5.3.5.1. Single Model
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <hr class="docutils" />
+<p><strong>TD DSA 2021 de Antoine Ly   -   rapport de Fabien Faivre</strong></p>
+<hr class="docutils" />
+<div class="section" id="un-dernier-essai-bert">
+<h1><span class="section-number">5. </span>Un dernier Essai : BERT<a class="headerlink" href="#un-dernier-essai-bert" title="Permalink to this headline">¶</a></h1>
+<p>Après avoir utilisé directement les modèles préentrainé, je souhaitais essayer d’ajuster véritablement un modèle de Deep Learning.</p>
+<p>J’ai alors trouvé un article sur <code class="docutils literal notranslate"><span class="pre">medium</span></code> présentant une telle adaptation :</p>
+<p>source : <a class="reference external" href="https://scottmduda.medium.com/fine-tuning-language-models-for-sentiment-analysis-91db72396549">https://scottmduda.medium.com/fine-tuning-language-models-for-sentiment-analysis-91db72396549</a></p>
+<p>github : <a class="reference external" href="https://github.com/dontmindifiduda/financial_statement_sentiment_analysis/">https://github.com/dontmindifiduda/financial_statement_sentiment_analysis/</a></p>
+<p>La logique consiste à aller chercher un modèle préentrainé sur HuggingFace. Ici trous variantes sont testées :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">BERT</span></code> : le modèle de référence de l’encodage bidirectionnel initialement publié par Google</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DistilBERT</span></code> : la version allégée de <code class="docutils literal notranslate"><span class="pre">BERT</span></code> pour des performances a priori comparables</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RoBERTa</span></code> : la variante de Facebook de <code class="docutils literal notranslate"><span class="pre">BERT</span></code> renonçant à l’objectif de prédiction de la phrase suivante et ayant été entraîné avec plus de données et des séquences d’apprentissage plus longues</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> 
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">string</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;ggplot&#39;</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">nltk</span>
+<span class="kn">from</span> <span class="nn">nltk.corpus</span> <span class="kn">import</span> <span class="n">stopwords</span>
+<span class="kn">from</span> <span class="nn">nltk.tokenize</span> <span class="kn">import</span> <span class="n">word_tokenize</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span><span class="p">,</span> <span class="n">defaultdict</span>
+
+<span class="kn">import</span> <span class="nn">transformers</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">BertModel</span><span class="p">,</span> <span class="n">BertTokenizer</span><span class="p">,</span> <span class="n">DistilBertTokenizer</span><span class="p">,</span> <span class="n">RobertaModel</span><span class="p">,</span> <span class="n">RobertaTokenizer</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoConfig</span><span class="p">,</span> <span class="n">AutoModel</span><span class="p">,</span> <span class="n">AdamW</span><span class="p">,</span> <span class="n">get_linear_schedule_with_warmup</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span><span class="p">,</span> <span class="n">optim</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">random_split</span><span class="p">,</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="n">RandomSampler</span><span class="p">,</span> <span class="n">SequentialSampler</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span><span class="p">,</span> <span class="n">StratifiedKFold</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">LabelEncoder</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">f1_score</span><span class="p">,</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">classification_report</span>
+
+<span class="kn">import</span> <span class="nn">mlflow</span>
+
+<span class="kn">import</span> <span class="nn">gc</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="chargement-des-donnees">
+<h2><span class="section-number">5.1. </span>Chargement des données<a class="headerlink" href="#chargement-des-donnees" title="Permalink to this headline">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># On Importe les données</span>
+
+<span class="c1">#df</span>
+<span class="n">df_train</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="s1">&#39;/mnt/data/interim/df_train.gzip&#39;</span><span class="p">)</span>
+<span class="n">df_val</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="s1">&#39;/mnt/data/interim/df_val.gzip&#39;</span><span class="p">)</span>
+<span class="n">df_test</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="s1">&#39;/mnt/data/interim/df_test.gzip&#39;</span><span class="p">)</span>
+
+<span class="c1">#X</span>
+<span class="n">X_train</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="s1">&#39;/mnt/data/interim/X_train.gzip&#39;</span><span class="p">)</span>
+<span class="n">X_val</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="s1">&#39;/mnt/data/interim/X_val.gzip&#39;</span><span class="p">)</span>
+<span class="n">X_test</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="s1">&#39;/mnt/data/interim/X_test.gzip&#39;</span><span class="p">)</span>
+
+<span class="n">X_train_prepro</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="s1">&#39;/mnt/data/interim/X_train_prepro.gzip&#39;</span><span class="p">)</span>
+<span class="n">X_val_prepro</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="s1">&#39;/mnt/data/interim/X_val_prepro.gzip&#39;</span><span class="p">)</span>
+<span class="n">X_test_prepro</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="s1">&#39;/mnt/data/interim/X_test_prepro.gzip&#39;</span><span class="p">)</span>
+
+<span class="c1">#y</span>
+<span class="n">y_train</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="s1">&#39;/mnt/data/interim/y_train.gzip&#39;</span><span class="p">)</span>
+<span class="n">y_val</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="s1">&#39;/mnt/data/interim/y_val.gzip&#39;</span><span class="p">)</span>
+<span class="n">y_test</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="s1">&#39;/mnt/data/interim/y_test.gzip&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">res_fin2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="s1">&#39;/mnt/data/processed/res_fin2.gzip&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="definition-du-device-a-utiliser-et-fixation-de-la-graine">
+<h2><span class="section-number">5.2. </span>Définition du Device à utiliser et fixation de la graîne<a class="headerlink" href="#definition-du-device-a-utiliser-et-fixation-de-la-graine" title="Permalink to this headline">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s1">&#39;cuda&#39;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+
+<span class="n">RANDOM_SEED</span> <span class="o">=</span> <span class="mi">73</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">RANDOM_SEED</span><span class="p">)</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="n">RANDOM_SEED</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;torch._C.Generator at 0x7f4aa41a9330&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df_train</span><span class="p">,</span> <span class="n">df_val</span><span class="p">,</span> <span class="n">df_test</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;num_char&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">len</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;num_words&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">countplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;sentiment&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Nombre de tweets&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Nombre de tweets par setiment&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/nn_13_0.png" src="../_images/nn_13_0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Plus long tweet : &#39;</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;num_words&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="s1">&#39;mots.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Plus long tweet :  33 mots.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Tweet le plus court : &#39;</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;num_words&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="s1">&#39;mots.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Tweet le plus court :  1 mots.
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="exploration-pour-l-analyse-de-sentiment">
+<h2><span class="section-number">5.3. </span>Exploration pour l’analyse de sentiment<a class="headerlink" href="#exploration-pour-l-analyse-de-sentiment" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="code-generique">
+<h3><span class="section-number">5.3.1. </span>Code générique<a class="headerlink" href="#code-generique" title="Permalink to this headline">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">MAX_LENGTH</span> <span class="o">=</span> <span class="mi">64</span>
+<span class="n">BATCH_SIZE</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">NUM_CLASSES</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">EPOCHS</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">DROPOUT_PROB</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">WEIGHT_DECAY</span> <span class="o">=</span> <span class="mf">0.01</span>
+<span class="n">NFOLDS</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">LEARNING_RATE</span> <span class="o">=</span> <span class="mf">2e-5</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">format_time</span><span class="p">(</span><span class="n">elapsed</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">((</span><span class="n">elapsed</span><span class="p">)))))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>La classe suivante permet de charger les données et tokeniser les tweets</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">TweetDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tweets</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">max_length</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tweets</span> <span class="o">=</span> <span class="n">tweets</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">tokenizer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span> <span class="o">=</span> <span class="n">max_length</span>
+        
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tweets</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+        
+        <span class="n">tweet</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tweets</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        
+        <span class="n">encoding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">encode_plus</span><span class="p">(</span>
+            <span class="n">tweet</span><span class="p">,</span>
+            <span class="n">max_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_length</span><span class="p">,</span>
+            <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;max_length&#39;</span><span class="p">,</span>
+            <span class="n">add_special_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+            <span class="n">return_token_type_ids</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">return_attention_mask</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">return_tensors</span><span class="o">=</span><span class="s1">&#39;pt&#39;</span>  
+        <span class="p">)</span> 
+        
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;tweet_text&#39;</span><span class="p">:</span> <span class="n">tweet</span><span class="p">,</span>
+            <span class="s1">&#39;input_ids&#39;</span><span class="p">:</span> <span class="n">encoding</span><span class="p">[</span><span class="s1">&#39;input_ids&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span>
+            <span class="s1">&#39;attention_mask&#39;</span><span class="p">:</span> <span class="n">encoding</span><span class="p">[</span><span class="s1">&#39;attention_mask&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span>
+            <span class="s1">&#39;labels&#39;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+        <span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Transforme les jeux de données. Les données sont tronquées au delà de <code class="docutils literal notranslate"><span class="pre">MAX_LENGTH</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_dataset</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">max_length</span><span class="p">):</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">TweetDataset</span><span class="p">(</span><span class="n">tweets</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+                          <span class="n">labels</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;sentiment&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+                          <span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">,</span>
+                          <span class="n">max_length</span><span class="o">=</span><span class="n">max_length</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ds</span>
+
+<span class="k">def</span> <span class="nf">create_dataloader</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Le code suivant crée deux variantes d’évaluation de modèles :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">single</span> <span class="pre">model</span> <span class="pre">performance</span></code> : analyse directement les résultats d’un unique modèle</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cv_ensemble_performance</span></code> : crée les prédictions d’un ensemble modèle. Utilisé en liaison avec l’analyse 10 fold : les modèles sur chaque fold sont considérés comme indépendants et combiné pour déterminer la prédiction finale</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">cv_ensemble_performance</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+    <span class="n">preds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span>
+    <span class="n">summed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">preds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">summed</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_true</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">y_pred</span><span class="o">=</span><span class="n">preds</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_true</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">y_pred</span><span class="o">=</span><span class="n">preds</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">target_names</span><span class="o">=</span><span class="n">le</span><span class="o">.</span><span class="n">classes_</span><span class="p">))</span>
+    
+<span class="k">def</span> <span class="nf">single_model_performance</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_true</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">y_pred</span><span class="o">=</span><span class="n">preds</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_true</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">y_pred</span><span class="o">=</span><span class="n">preds</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">target_names</span><span class="o">=</span><span class="n">le</span><span class="o">.</span><span class="n">classes_</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">train_model</span></code> entraine le modèle sur chaque batch du jeu de données (extraits par le DalaLoader)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">train_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">data_loader</span><span class="p">,</span> <span class="n">loss_function</span><span class="p">,</span> 
+                <span class="n">optimizer</span><span class="p">,</span> <span class="n">scheduler</span><span class="p">,</span> <span class="n">n_examples</span><span class="p">):</span>
+    
+    <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+    <span class="n">losses</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">correct_preds</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">complete_preds</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">complete_labels</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">data_loader</span><span class="p">:</span>
+        <span class="n">input_ids</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s1">&#39;input_ids&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">attention_mask</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s1">&#39;attention_mask&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        
+        <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">input_ids</span><span class="o">=</span><span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="o">=</span><span class="n">attention_mask</span><span class="p">)</span>
+            
+        <span class="n">_</span><span class="p">,</span> <span class="n">preds</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_function</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+        <span class="n">complete_preds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">preds</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+        <span class="n">complete_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+        <span class="n">correct_preds</span> <span class="o">+=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">preds</span> <span class="o">==</span> <span class="n">labels</span><span class="p">)</span>
+        <span class="n">losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+        
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">max_norm</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+    
+    <span class="n">complete_preds_flat</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">complete_preds</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">y</span><span class="p">]</span>
+    <span class="n">complete_labels_flat</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">complete_labels</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">y</span><span class="p">]</span>
+    <span class="n">acc_score</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_true</span><span class="o">=</span><span class="n">complete_labels_flat</span><span class="p">,</span> 
+                             <span class="n">y_pred</span><span class="o">=</span><span class="n">complete_preds_flat</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">acc_score</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">losses</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">eval_model</span></code> : évalue un modèle sur un jeu de test pour chaque batch du jeu de test</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">eval_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">data_loader</span><span class="p">,</span> <span class="n">loss_function</span><span class="p">,</span> <span class="n">n_examples</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    
+    <span class="n">losses</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">correct_preds</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">complete_preds</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">complete_labels</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">complete_outputs</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data_loader</span><span class="p">:</span>
+            <span class="n">input_ids</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;input_ids&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">attention_mask</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;attention_mask&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+            <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">input_ids</span><span class="o">=</span><span class="n">input_ids</span><span class="p">,</span> 
+                            <span class="n">attention_mask</span><span class="o">=</span><span class="n">attention_mask</span><span class="p">)</span>
+            
+            <span class="n">_</span><span class="p">,</span> <span class="n">preds</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_function</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+            
+            <span class="n">correct_preds</span> <span class="o">+=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">preds</span> <span class="o">==</span> <span class="n">labels</span><span class="p">)</span>
+            <span class="n">complete_preds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">preds</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+            <span class="n">complete_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+            <span class="n">complete_outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outputs</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+            <span class="n">losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+        
+        <span class="n">accuracy</span> <span class="o">=</span> <span class="n">correct_preds</span><span class="o">.</span><span class="n">double</span><span class="p">()</span> <span class="o">/</span> <span class="n">n_examples</span>
+        <span class="n">complete_preds_flat</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">complete_preds</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">y</span><span class="p">]</span>
+        <span class="n">complete_labels_flat</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">complete_labels</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">y</span><span class="p">]</span>
+        <span class="n">complete_outputs_flat</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">complete_outputs</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">y</span><span class="p">]</span>
+
+        <span class="n">acc_score</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_true</span><span class="o">=</span><span class="n">complete_labels_flat</span><span class="p">,</span> 
+                             <span class="n">y_pred</span><span class="o">=</span><span class="n">complete_preds_flat</span><span class="p">)</span>
+        
+        <span class="n">return_items</span> <span class="o">=</span> <span class="p">(</span><span class="n">acc_score</span><span class="p">,</span> 
+                        <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">losses</span><span class="p">),</span>
+                        <span class="n">complete_labels_flat</span><span class="p">,</span>
+                        <span class="n">complete_preds_flat</span><span class="p">,</span> 
+                        <span class="n">complete_outputs_flat</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">return_items</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">plot_cm</span></code> permet de tracer la matrice de confusion du modèle</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_cm</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">target_names</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> 
+            <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot;Create a labelled confusion matrix plot.&quot;&quot;&quot;</span>
+    <span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">cm</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;BuGn&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+                <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Confusion matrix&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Predicted&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">target_names</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Actual&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">target_names</span><span class="p">,</span> 
+                       <span class="n">fontdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;verticalalignment&#39;</span><span class="p">:</span> <span class="s1">&#39;center&#39;</span><span class="p">});</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>On initialise MLFlow pour pytorch</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">mlflow.pytorch</span>
+<span class="kn">from</span> <span class="nn">mlflow.tracking</span> <span class="kn">import</span> <span class="n">MlflowClient</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">train_fold</span></code> permet d’entrainer un modèle sur un unique fold. Les résiltats sont stockés dans MLFlow. Les résultats sont évalués à l’issue de chaque EPOCH.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">train_fold</span><span class="p">(</span><span class="n">mlf_XP</span><span class="p">,</span> <span class="n">xp_name_iter</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">train_dataloader</span><span class="p">,</span> 
+               <span class="n">val_dataloader</span><span class="p">,</span> <span class="n">test_dataloader</span><span class="p">,</span> <span class="n">loss_fn</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> 
+               <span class="n">scheduler</span><span class="p">,</span> <span class="n">model_save_name</span><span class="p">,</span> <span class="n">n_train</span><span class="p">,</span> <span class="n">n_val</span><span class="p">,</span> <span class="n">single_model</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    
+    
+    <span class="n">mlflow</span><span class="o">.</span><span class="n">set_experiment</span><span class="p">(</span><span class="n">mlf_XP</span><span class="p">)</span>
+
+    
+    
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">history</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">best_accuracy</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+        <span class="n">run_name</span> <span class="o">=</span> <span class="n">xp_name_iter</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">mlflow</span><span class="o">.</span><span class="n">start_run</span><span class="p">(</span><span class="n">run_name</span> <span class="o">=</span> <span class="n">run_name</span><span class="p">):</span>
+            <span class="n">epoch_start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Epoch &#39;</span><span class="p">,</span> <span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">epochs</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="o">*</span><span class="mi">50</span><span class="p">)</span>
+
+            <span class="n">training_output</span> <span class="o">=</span> <span class="n">train_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> 
+                                          <span class="n">device</span><span class="p">,</span> 
+                                          <span class="n">train_dataloader</span><span class="p">,</span> 
+                                          <span class="n">loss_fn</span><span class="p">,</span> 
+                                          <span class="n">optimizer</span><span class="p">,</span> 
+                                          <span class="n">scheduler</span><span class="p">,</span> 
+                                          <span class="n">n_train</span><span class="p">)</span>
+
+            <span class="n">train_acc</span><span class="p">,</span> <span class="n">train_loss</span> <span class="o">=</span> <span class="n">training_output</span>
+
+            <span class="n">val_output</span> <span class="o">=</span> <span class="n">eval_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> 
+                                    <span class="n">device</span><span class="p">,</span> 
+                                    <span class="n">val_dataloader</span><span class="p">,</span> 
+                                    <span class="n">loss_fn</span><span class="p">,</span> 
+                                    <span class="n">n_val</span><span class="p">)</span>
+
+            <span class="n">val_acc</span><span class="p">,</span> <span class="n">val_loss</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">val_preds</span><span class="p">,</span> <span class="n">val_outputs</span> <span class="o">=</span> <span class="n">val_output</span>
+
+            <span class="n">history</span><span class="p">[</span><span class="s1">&#39;train_accuracy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">train_acc</span><span class="p">)</span>
+            <span class="n">history</span><span class="p">[</span><span class="s1">&#39;train_loss&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">train_loss</span><span class="p">)</span>
+            <span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_accuracy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val_acc</span><span class="p">)</span>
+            <span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_loss&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val_loss</span><span class="p">)</span>
+            <span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_preds&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val_preds</span><span class="p">)</span>
+            
+            <span class="n">mlflow</span><span class="o">.</span><span class="n">log_metrics</span><span class="p">({</span><span class="s1">&#39;epoch&#39;</span><span class="p">:</span> <span class="n">epoch</span><span class="p">,</span> <span class="s1">&#39;train_acc&#39;</span> <span class="p">:</span> <span class="n">train_acc</span><span class="p">,</span> <span class="s1">&#39;train_loss&#39;</span><span class="p">:</span> <span class="n">train_loss</span><span class="p">,</span> <span class="s1">&#39;val_acc&#39;</span><span class="p">:</span> <span class="n">val_acc</span><span class="p">,</span> <span class="s1">&#39;val_loss&#39;</span> <span class="p">:</span> <span class="n">val_loss</span> <span class="p">})</span>
+            
+            <span class="n">mlflow</span><span class="o">.</span><span class="n">pytorch</span><span class="o">.</span><span class="n">log_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">run_name</span><span class="p">,</span> <span class="n">conda_env</span><span class="o">=</span><span class="s1">&#39;/mnt/configs/conda.yml&#39;</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">val_acc</span> <span class="o">&gt;</span> <span class="n">best_accuracy</span><span class="p">:</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="n">model_save_name</span><span class="p">)</span>
+                <span class="n">best_accuracy</span> <span class="o">=</span> <span class="n">val_acc</span>
+                <span class="n">best_preds</span> <span class="o">=</span> <span class="n">val_preds</span>
+                <span class="n">best_outputs</span> <span class="o">=</span> <span class="n">val_outputs</span>
+                <span class="n">best_epoch</span> <span class="o">=</span> <span class="n">epoch</span>
+                
+
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Train Loss: &#39;</span><span class="p">,</span> 
+                  <span class="n">train_loss</span><span class="p">,</span> 
+                  <span class="s1">&#39; | &#39;</span><span class="p">,</span> 
+                  <span class="s1">&#39;Train Accuracy: &#39;</span><span class="p">,</span> 
+                  <span class="n">train_acc</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Val Loss: &#39;</span><span class="p">,</span> 
+                  <span class="n">val_loss</span><span class="p">,</span> 
+                  <span class="s1">&#39; | &#39;</span><span class="p">,</span> 
+                  <span class="s1">&#39;Val Accuracy: &#39;</span><span class="p">,</span> 
+                  <span class="n">val_acc</span><span class="p">)</span>
+            <span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">format_time</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">epoch_start_time</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Epoch Train Time: &#39;</span><span class="p">,</span> 
+                  <span class="n">elapsed_time</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            
+            <span class="n">mlflow</span><span class="o">.</span><span class="n">set_tag</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;elapsed_time&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">elapsed_time</span><span class="p">)</span>   
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Finished Training.&#39;</span><span class="p">)</span>   
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Fold Train Time: &#39;</span><span class="p">,</span> <span class="n">format_time</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                  
+    <span class="k">if</span> <span class="n">single_model</span><span class="p">:</span>
+        <span class="n">test_acc</span><span class="p">,</span> <span class="n">test_loss</span><span class="p">,</span> <span class="n">test_actuals</span><span class="p">,</span> <span class="n">test_preds</span><span class="p">,</span> <span class="n">test_outputs</span> <span class="o">=</span> <span class="n">eval_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> 
+                                                    <span class="n">device</span><span class="p">,</span> 
+                                                    <span class="n">test_dataloader</span><span class="p">,</span> 
+                                                    <span class="n">loss_function</span><span class="p">,</span> 
+                                                    <span class="nb">len</span><span class="p">(</span><span class="n">df_test</span><span class="p">))</span>
+
+        <span class="n">single_model_performance</span><span class="p">(</span><span class="n">test_preds</span><span class="p">,</span> <span class="n">df_test</span><span class="p">[</span><span class="s1">&#39;sentiment&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="n">plot_cm</span><span class="p">(</span><span class="n">test_actuals</span><span class="p">,</span> <span class="n">test_preds</span><span class="p">)</span>
+        <span class="n">f1_macro_test</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">test_actuals</span><span class="p">,</span> <span class="n">test_preds</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s1">&#39;macro&#39;</span><span class="p">)</span>
+        <span class="n">run_name</span> <span class="o">=</span> <span class="n">xp_name_iter</span> <span class="o">+</span> <span class="s1">&#39;_best&#39;</span>
+        <span class="k">with</span> <span class="n">mlflow</span><span class="o">.</span><span class="n">start_run</span><span class="p">(</span><span class="n">run_name</span> <span class="o">=</span> <span class="n">run_name</span><span class="p">):</span>
+            <span class="n">mlflow</span><span class="o">.</span><span class="n">log_metrics</span><span class="p">({</span><span class="s1">&#39;train_acc&#39;</span> <span class="p">:</span> <span class="n">history</span><span class="p">[</span><span class="s1">&#39;train_accuracy&#39;</span><span class="p">][</span><span class="n">epoch</span><span class="p">],</span> <span class="s1">&#39;train_loss&#39;</span><span class="p">:</span> <span class="n">history</span><span class="p">[</span><span class="s1">&#39;train_accuracy&#39;</span><span class="p">][</span><span class="n">epoch</span><span class="p">],</span> <span class="s1">&#39;val_acc&#39;</span><span class="p">:</span> <span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_accuracy&#39;</span><span class="p">][</span><span class="n">epoch</span><span class="p">],</span> <span class="s1">&#39;val_loss&#39;</span> <span class="p">:</span> <span class="n">history</span><span class="p">[</span><span class="s1">&#39;train_accuracy&#39;</span><span class="p">][</span><span class="n">epoch</span><span class="p">],</span> <span class="s1">&#39;test_acc&#39;</span><span class="p">:</span> <span class="n">test_acc</span><span class="p">,</span> <span class="s1">&#39;test_loss&#39;</span><span class="p">:</span> <span class="n">test_loss</span><span class="p">,</span> <span class="s1">&#39;f1_test&#39;</span><span class="p">:</span><span class="n">f1_macro_test</span><span class="p">})</span>
+            <span class="n">mlflow</span><span class="o">.</span><span class="n">pytorch</span><span class="o">.</span><span class="n">log_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">run_name</span><span class="p">,</span> <span class="n">conda_env</span><span class="o">=</span><span class="s1">&#39;/mnt/configs/conda.yml&#39;</span><span class="p">)</span>
+
+                  
+    <span class="k">return</span> <span class="n">history</span><span class="p">,</span> <span class="n">best_preds</span><span class="p">,</span> <span class="n">best_outputs</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>La fonction suivante exploite l’entraîneme,nt sur un fold pour l’étendre sur du k-fold</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_oof_and_test_preds</span><span class="p">(</span><span class="n">mlf_XP</span><span class="p">,</span> <span class="n">model_type</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> 
+                           <span class="n">train_df</span><span class="p">,</span> <span class="n">test_df</span><span class="p">,</span> <span class="n">single_model</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    
+    
+    <span class="n">mlflow</span><span class="o">.</span><span class="n">set_experiment</span><span class="p">(</span><span class="n">mlf_XP</span><span class="p">)</span>
+    
+    
+    <span class="n">oof_preds</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">oof_outputs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">oof_preds_indices</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">test_preds_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">test_outputs_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">history_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    
+    <span class="n">fold</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="n">x_train</span> <span class="o">=</span> <span class="n">train_df</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span>
+    <span class="n">y_train</span> <span class="o">=</span> <span class="n">train_df</span><span class="p">[</span><span class="s1">&#39;sentiment&#39;</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">train_index</span><span class="p">,</span> <span class="n">val_index</span> <span class="ow">in</span> <span class="n">skf</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Fold: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fold</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+        
+        <span class="n">x_tr</span> <span class="o">=</span> <span class="n">x_train</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">train_index</span><span class="p">]</span>
+        <span class="n">y_tr</span> <span class="o">=</span> <span class="n">y_train</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">train_index</span><span class="p">]</span>
+        <span class="n">x_va</span> <span class="o">=</span> <span class="n">x_train</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">val_index</span><span class="p">]</span>
+        <span class="n">y_va</span> <span class="o">=</span> <span class="n">y_train</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">val_index</span><span class="p">]</span>
+        
+        <span class="n">train</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">x_tr</span><span class="p">,</span> <span class="n">y_tr</span><span class="p">)),</span> 
+                             <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s1">&#39;sentiment&#39;</span><span class="p">])</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">x_va</span><span class="p">,</span> <span class="n">y_va</span><span class="p">)),</span> 
+                           <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s1">&#39;sentiment&#39;</span><span class="p">])</span>
+
+        <span class="n">train_ds</span> <span class="o">=</span> <span class="n">create_dataset</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">MAX_LENGTH</span><span class="p">)</span>
+        <span class="n">val_ds</span> <span class="o">=</span> <span class="n">create_dataset</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">MAX_LENGTH</span><span class="p">)</span>
+        <span class="n">test_ds</span> <span class="o">=</span> <span class="n">create_dataset</span><span class="p">(</span><span class="n">test_df</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">MAX_LENGTH</span><span class="p">)</span>
+        
+
+        <span class="k">if</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s1">&#39;bert&#39;</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">BERTSentimentClassifier</span><span class="p">(</span><span class="n">NUM_CLASSES</span><span class="p">)</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s1">&#39;distilbert&#39;</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">DistilBertForSequenceClassification</span><span class="p">(</span><span class="n">pretrained_model_name</span><span class="o">=</span><span class="n">DISTILBERT_MODEL_NAME</span><span class="p">,</span> 
+                                                        <span class="n">num_classes</span><span class="o">=</span><span class="n">NUM_CLASSES</span><span class="p">)</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s1">&#39;roberta&#39;</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">RobertaSentimentClassifier</span><span class="p">(</span><span class="n">n_classes</span><span class="o">=</span><span class="n">NUM_CLASSES</span><span class="p">)</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        
+        <span class="n">train_loader</span> <span class="o">=</span> <span class="n">create_dataloader</span><span class="p">(</span><span class="n">train_ds</span><span class="p">,</span> <span class="n">BATCH_SIZE</span><span class="p">)</span>
+        <span class="n">val_loader</span> <span class="o">=</span> <span class="n">create_dataloader</span><span class="p">(</span><span class="n">val_ds</span><span class="p">,</span> <span class="n">BATCH_SIZE</span><span class="p">)</span>
+        <span class="n">test_loader</span> <span class="o">=</span> <span class="n">create_dataloader</span><span class="p">(</span><span class="n">test_ds</span><span class="p">,</span> <span class="n">BATCH_SIZE</span><span class="p">)</span>
+        
+        <span class="n">training_steps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_loader</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span> <span class="o">*</span> <span class="n">EPOCHS</span>
+        <span class="n">warmup_steps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">training_steps</span><span class="p">)</span>
+        <span class="n">optimizer</span> <span class="o">=</span> <span class="n">AdamW</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> 
+                          <span class="n">lr</span><span class="o">=</span><span class="n">LEARNING_RATE</span><span class="p">,</span> 
+                          <span class="n">weight_decay</span><span class="o">=</span><span class="n">WEIGHT_DECAY</span><span class="p">,</span> 
+                          <span class="n">correct_bias</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">scheduler</span> <span class="o">=</span> <span class="n">get_linear_schedule_with_warmup</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> 
+                                                    <span class="n">num_warmup_steps</span><span class="o">=</span><span class="n">warmup_steps</span><span class="p">,</span> 
+                                                    <span class="n">num_training_steps</span><span class="o">=</span><span class="n">training_steps</span><span class="p">)</span>
+        
+        <span class="n">model_save_name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_fold_</span><span class="si">{}</span><span class="s1">.bin&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model_type</span><span class="p">,</span> <span class="n">fold</span><span class="p">)</span>
+        
+        <span class="n">history</span><span class="p">,</span> <span class="n">preds</span><span class="p">,</span> <span class="n">outputs</span> <span class="o">=</span> <span class="n">train_fold</span><span class="p">(</span><span class="n">mlf_XP</span> <span class="o">=</span> <span class="n">mlf_XP</span><span class="p">,</span> 
+                                             <span class="n">xp_name_iter</span> <span class="o">=</span> <span class="n">model_type</span> <span class="o">+</span> <span class="s1">&#39;_Fold&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">fold</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span>
+                                             <span class="n">epochs</span><span class="o">=</span><span class="n">EPOCHS</span><span class="p">,</span>
+                                             <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> 
+                                             <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> 
+                                             <span class="n">train_dataloader</span><span class="o">=</span><span class="n">train_loader</span><span class="p">,</span> 
+                                             <span class="n">val_dataloader</span><span class="o">=</span><span class="n">val_loader</span><span class="p">,</span>
+                                             <span class="n">test_dataloader</span><span class="o">=</span><span class="n">test_loader</span><span class="p">,</span>
+                                             <span class="n">loss_fn</span><span class="o">=</span><span class="n">loss_function</span><span class="p">,</span>
+                                             <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+                                             <span class="n">scheduler</span><span class="o">=</span><span class="n">scheduler</span><span class="p">,</span>
+                                             <span class="n">model_save_name</span><span class="o">=</span><span class="n">model_save_name</span><span class="p">,</span>
+                                             <span class="n">n_train</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">train</span><span class="p">),</span>
+                                             <span class="n">n_val</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">),</span>
+                                             <span class="n">single_model</span><span class="o">=</span><span class="kc">False</span>
+                                            <span class="p">)</span>
+        
+        <span class="n">history_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">history</span><span class="p">)</span>
+        <span class="n">oof_preds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span>
+        <span class="n">oof_outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span>
+        <span class="n">oof_preds_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val_index</span><span class="p">)</span>
+        
+        <span class="n">test_acc</span><span class="p">,</span> <span class="n">test_loss</span><span class="p">,</span> <span class="n">test_actuals</span><span class="p">,</span> <span class="n">test_preds</span><span class="p">,</span> <span class="n">test_outputs</span> <span class="o">=</span> <span class="n">eval_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> 
+                                                                                <span class="n">device</span><span class="p">,</span> 
+                                                                                <span class="n">test_loader</span><span class="p">,</span> 
+                                                                                <span class="n">loss_function</span><span class="p">,</span> 
+                                                                                <span class="nb">len</span><span class="p">(</span><span class="n">test_df</span><span class="p">))</span>
+        <span class="n">test_preds_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">test_preds</span><span class="p">)</span>
+        <span class="n">test_outputs_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">test_outputs</span><span class="p">)</span>
+        
+        <span class="n">fold</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">NFOLDS</span><span class="p">),</span> <span class="s1">&#39;Fold CV Train Time: &#39;</span><span class="p">,</span> <span class="n">format_time</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">history_list</span><span class="p">,</span> <span class="n">test_outputs_list</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>La fonction de perte choisie est la cross entropy.
+La perte de Cross-entropy croit lorsque la probabilité prédite pour une classe diverge du label réel. Ainsi, uen prédiction de 0,12 alors que le label réel est 1 se traduirait en une forte pénalisation. Un modèle parfait aurait une log loss de 0.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">loss_function</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Pour la féinition des k fold on efefctue un échantillonnage stratifié afin de conserver la proportion de chaque classe.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">skf</span> <span class="o">=</span> <span class="n">StratifiedKFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="n">NFOLDS</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">RANDOM_SEED</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="donnees">
+<h3><span class="section-number">5.3.2. </span>Données<a class="headerlink" href="#donnees" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>On est obligé de recoder les sorties car laisser un label cible négatif génère une erreur <code class="docutils literal notranslate"><span class="pre">CUDA</span> <span class="pre">error:</span> <span class="pre">device-side</span> <span class="pre">assert</span> <span class="pre">triggered</span></code>
+cf <a class="reference external" href="https://discuss.pytorch.org/t/runtimeerror-cuda-error-device-side-assert-triggered/34213/8">lien</a></p>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">le</span> <span class="o">=</span> <span class="n">LabelEncoder</span><span class="p">()</span>
+<span class="n">df_train</span><span class="p">[</span><span class="s1">&#39;sentiment&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">le</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">df_train</span><span class="p">[</span><span class="s1">&#39;sentiment&#39;</span><span class="p">])</span>
+<span class="n">df_val</span><span class="p">[</span><span class="s1">&#39;sentiment&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">le</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">df_val</span><span class="p">[</span><span class="s1">&#39;sentiment&#39;</span><span class="p">])</span>
+<span class="n">df_test</span><span class="p">[</span><span class="s1">&#39;sentiment&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">le</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">df_test</span><span class="p">[</span><span class="s1">&#39;sentiment&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_train</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>text</th>
+      <th>sentiment</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>I`d have responded, if I were going</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Sooo SAD I will miss you here in San Diego!!!</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>my boss is bullying me...</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>what interview! leave me alone</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Sons of ****, why couldn`t they put them on t...</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>21979</th>
+      <td>No allowed a calculator for this exam despite ...</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>21980</th>
+      <td>Haha same as miine</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>21981</th>
+      <td>i`m sorry people are so rude to you, isaac, ...</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>21982</th>
+      <td>why? i enjoy fancy meals on my own smtimes, t...</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>21983</th>
+      <td>oh yeah - love his choregoraphy. the pants......</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+<p>21984 rows × 2 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_val</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>text</th>
+      <th>sentiment</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>21984</th>
+      <td>_JessicaB_**** yip.....aw gonna miss them on bb</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>21985</th>
+      <td>_violence heyyyy babyy</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>21986</th>
+      <td>Up at 6am on Sunday... Going to meet my mom fo...</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>21987</th>
+      <td>so the Today show still hasn`t gotten in touch...</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>21988</th>
+      <td>Just checked email and got a follower withb sa...</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>27475</th>
+      <td>wish we could come see u on Denver  husband l...</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>27476</th>
+      <td>I`ve wondered about rake to.  The client has ...</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>27477</th>
+      <td>Yay good for both of you. Enjoy the break - y...</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>27478</th>
+      <td>But it was worth it  ****.</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>27479</th>
+      <td>All this flirting going on - The ATG smiles...</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+<p>5496 rows × 2 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_train_full</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df_train</span><span class="p">,</span> <span class="n">df_val</span><span class="p">])</span>
+<span class="n">df_train_full</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>text</th>
+      <th>sentiment</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>I`d have responded, if I were going</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Sooo SAD I will miss you here in San Diego!!!</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>my boss is bullying me...</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>what interview! leave me alone</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Sons of ****, why couldn`t they put them on t...</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>27475</th>
+      <td>wish we could come see u on Denver  husband l...</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>27476</th>
+      <td>I`ve wondered about rake to.  The client has ...</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>27477</th>
+      <td>Yay good for both of you. Enjoy the break - y...</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>27478</th>
+      <td>But it was worth it  ****.</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>27479</th>
+      <td>All this flirting going on - The ATG smiles...</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+<p>27480 rows × 2 columns</p>
+</div></div></div>
+</div>
+</div>
+<div class="section" id="bert">
+<h3><span class="section-number">5.3.3. </span>BERT<a class="headerlink" href="#bert" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="single-model">
+<h4><span class="section-number">5.3.3.1. </span>Single Model<a class="headerlink" href="#single-model" title="Permalink to this headline">¶</a></h4>
+<p>Beaucoup d’allers retours ont été faits. Afin d’éviter de staurer la mémoir ede la carte graphique il est nécessire de vider la mémoir cache régulièrement.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">del</span> <span class="n">distilbert_model</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">empty_cache</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>On utilise un modèle BERT classique</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">BERT_MODEL_NAME</span> <span class="o">=</span> <span class="s1">&#39;bert-base-cased&#39;</span>
+<span class="n">bert_tokenizer</span> <span class="o">=</span> <span class="n">BertTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">BERT_MODEL_NAME</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>On créée un DataLoader adapté au tokenizer de BERT</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bert_train_ds</span> <span class="o">=</span> <span class="n">create_dataset</span><span class="p">(</span><span class="n">df_train</span><span class="p">,</span> <span class="n">bert_tokenizer</span><span class="p">,</span> <span class="n">MAX_LENGTH</span><span class="p">)</span>
+<span class="n">bert_test_ds</span> <span class="o">=</span> <span class="n">create_dataset</span><span class="p">(</span><span class="n">df_test</span><span class="p">,</span> <span class="n">bert_tokenizer</span><span class="p">,</span> <span class="n">MAX_LENGTH</span><span class="p">)</span>
+<span class="n">bert_val_ds</span> <span class="o">=</span> <span class="n">create_dataset</span><span class="p">(</span><span class="n">df_val</span><span class="p">,</span> <span class="n">bert_tokenizer</span><span class="p">,</span> <span class="n">MAX_LENGTH</span><span class="p">)</span>
+
+<span class="n">bert_train_dataloader</span> <span class="o">=</span> <span class="n">create_dataloader</span><span class="p">(</span><span class="n">bert_train_ds</span><span class="p">,</span> <span class="n">BATCH_SIZE</span><span class="p">)</span>
+<span class="n">bert_test_dataloader</span> <span class="o">=</span> <span class="n">create_dataloader</span><span class="p">(</span><span class="n">bert_test_ds</span><span class="p">,</span> <span class="n">BATCH_SIZE</span><span class="p">)</span>
+<span class="n">bert_val_dataloader</span> <span class="o">=</span> <span class="n">create_dataloader</span><span class="p">(</span><span class="n">bert_val_ds</span><span class="p">,</span> <span class="n">BATCH_SIZE</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">BERTSentimentClassifier</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_classes</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BERTSentimentClassifier</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">BertModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">BERT_MODEL_NAME</span><span class="p">,</span> <span class="n">return_dict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1">#ATTENTION : il faut rajouter return_dict=False ici cf https://huggingface.co/transformers/migration.html</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drop</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">DROPOUT_PROB</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">,</span> <span class="n">n_classes</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="p">):</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">pooled_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span>
+            <span class="n">input_ids</span> <span class="o">=</span> <span class="n">input_ids</span><span class="p">,</span>
+            <span class="n">attention_mask</span><span class="o">=</span><span class="n">attention_mask</span>
+        <span class="p">)</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">pooled_output</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>On charge le modèle BERT. Ce faisant on écrase la dernière couche du modèle qu’on réentraînera</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bert_model</span> <span class="o">=</span> <span class="n">BERTSentimentClassifier</span><span class="p">(</span><span class="n">NUM_CLASSES</span><span class="p">)</span>
+<span class="n">bert_model</span> <span class="o">=</span> <span class="n">bert_model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>On définit le moteur d’optimisation</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">training_steps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bert_train_dataloader</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span> <span class="o">*</span> <span class="n">EPOCHS</span>
+
+<span class="n">bert_optimizer</span> <span class="o">=</span> <span class="n">AdamW</span><span class="p">(</span><span class="n">bert_model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> 
+                       <span class="n">lr</span><span class="o">=</span><span class="n">LEARNING_RATE</span><span class="p">,</span> 
+                       <span class="n">weight_decay</span><span class="o">=</span><span class="n">WEIGHT_DECAY</span><span class="p">,</span> 
+                       <span class="n">correct_bias</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">warmup_steps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">training_steps</span><span class="p">)</span>
+<span class="n">bert_scheduler</span> <span class="o">=</span> <span class="n">get_linear_schedule_with_warmup</span><span class="p">(</span><span class="n">bert_optimizer</span><span class="p">,</span> 
+                                                 <span class="n">num_warmup_steps</span><span class="o">=</span><span class="n">warmup_steps</span><span class="p">,</span> 
+                                                 <span class="n">num_training_steps</span><span class="o">=</span><span class="n">training_steps</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>On commence par l’ajustement d’un modèle BERT sur le jeu de données train</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bert_single_model_items</span> <span class="o">=</span> <span class="n">train_fold</span><span class="p">(</span><span class="n">mlf_XP</span><span class="o">=</span><span class="s1">&#39;BERT&#39;</span><span class="p">,</span> 
+                                     <span class="n">xp_name_iter</span><span class="o">=</span><span class="s1">&#39;BERT&#39;</span><span class="p">,</span>
+                                     <span class="n">epochs</span><span class="o">=</span><span class="n">EPOCHS</span><span class="p">,</span> 
+                                     <span class="n">model</span><span class="o">=</span><span class="n">bert_model</span><span class="p">,</span> 
+                                     <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> 
+                                     <span class="n">train_dataloader</span><span class="o">=</span><span class="n">bert_train_dataloader</span><span class="p">,</span> 
+                                     <span class="n">val_dataloader</span><span class="o">=</span><span class="n">bert_val_dataloader</span><span class="p">,</span>
+                                     <span class="n">test_dataloader</span><span class="o">=</span><span class="n">bert_test_dataloader</span><span class="p">,</span>
+                                     <span class="n">loss_fn</span><span class="o">=</span><span class="n">loss_function</span><span class="p">,</span>
+                                     <span class="n">optimizer</span><span class="o">=</span><span class="n">bert_optimizer</span><span class="p">,</span>
+                                     <span class="n">scheduler</span><span class="o">=</span><span class="n">bert_scheduler</span><span class="p">,</span>
+                                     <span class="n">model_save_name</span><span class="o">=</span><span class="s1">&#39;bert_best_model.bin&#39;</span><span class="p">,</span>
+                                     <span class="n">n_train</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">df_train</span><span class="p">),</span>
+                                     <span class="n">n_val</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">df_val</span><span class="p">),</span>
+                                     <span class="n">single_model</span><span class="o">=</span><span class="kc">True</span>
+                                    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Epoch  1 / 5
+--------------------------------------------------
+Train Loss:  0.9318898132361005  |  Train Accuracy:  0.5406659388646288
+Val Loss:  0.6341141717031945  |  Val Accuracy:  0.7387190684133915
+Epoch Train Time:  0:03:58
+
+
+Epoch  2 / 5
+--------------------------------------------------
+Train Loss:  0.5870891877136897  |  Train Accuracy:  0.761735807860262
+Val Loss:  0.5520704225745312  |  Val Accuracy:  0.7720160116448326
+Epoch Train Time:  0:03:59
+
+
+Epoch  3 / 5
+--------------------------------------------------
+Train Loss:  0.4959308845160483  |  Train Accuracy:  0.8064501455604076
+Val Loss:  0.5590653404766737  |  Val Accuracy:  0.777292576419214
+Epoch Train Time:  0:04:00
+
+
+Epoch  4 / 5
+--------------------------------------------------
+Train Loss:  0.4160484819113124  |  Train Accuracy:  0.8476619359534207
+Val Loss:  0.6347552118822932  |  Val Accuracy:  0.772197962154294
+Epoch Train Time:  0:03:58
+
+
+Epoch  5 / 5
+--------------------------------------------------
+Train Loss:  0.3328116309335604  |  Train Accuracy:  0.8863719068413392
+Val Loss:  0.764754705001102  |  Val Accuracy:  0.7701965065502183
+Epoch Train Time:  0:04:00
+
+
+Finished Training.
+Fold Train Time:  0:19:56
+
+
+[[ 803  180   18]
+ [ 228 1071  131]
+ [  24  223  856]]
+
+              precision    recall  f1-score   support
+
+    negative      0.761     0.802     0.781      1001
+     neutral      0.727     0.749     0.738      1430
+    positive      0.852     0.776     0.812      1103
+
+    accuracy                          0.772      3534
+   macro avg      0.780     0.776     0.777      3534
+weighted avg      0.775     0.772     0.773      3534
+</pre></div>
+</div>
+<img alt="../_images/nn_62_1.png" src="../_images/nn_62_1.png" />
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Le modèle BERT arrive à un f&amp; macro de <strong>77,7%</strong> sur le jeu de test et se classe directement en tête des modèles</p>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>modèle</th>
+      <th>f1_macro_val</th>
+      <th>f1_macro_test</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>BERT</td>
+      <td>NaN</td>
+      <td>0.777000</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>roBERTa_xgb_opti_</td>
+      <td>0.759147</td>
+      <td>0.759953</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>roBERTa_Blob_Vader_RF_opti_</td>
+      <td>0.756699</td>
+      <td>0.750216</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>roBERTa_RF_opti_</td>
+      <td>0.746630</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>TfIdf_LR_opti_modif_seuil</td>
+      <td>0.709477</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>base_TfIdf_RF_prepro_</td>
+      <td>0.707919</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>base_TfIdf_RF_prepro_opti_</td>
+      <td>0.706432</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>roBERTa_RF_</td>
+      <td>0.705912</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>TfIdf_LR_opti_</td>
+      <td>0.699877</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>TfIdf_LR_prepro_opti_</td>
+      <td>0.698565</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>base_TfIdf_RF_</td>
+      <td>0.669789</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</div>
+</div>
+<div class="section" id="distilbert">
+<h3><span class="section-number">5.3.4. </span>DistilBERT<a class="headerlink" href="#distilbert" title="Permalink to this headline">¶</a></h3>
+<p>On reprend ici la même logique que pour BERT</p>
+<div class="section" id="id1">
+<h4><span class="section-number">5.3.4.1. </span>Single Model<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DISTILBERT_MODEL_NAME</span> <span class="o">=</span> <span class="s1">&#39;distilbert-base-uncased&#39;</span>
+<span class="n">distilbert_tokenizer</span> <span class="o">=</span> <span class="n">DistilBertTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">DISTILBERT_MODEL_NAME</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">distilbert_train_ds</span> <span class="o">=</span> <span class="n">create_dataset</span><span class="p">(</span><span class="n">df_train</span><span class="p">,</span> <span class="n">distilbert_tokenizer</span><span class="p">,</span> <span class="n">MAX_LENGTH</span><span class="p">)</span>
+<span class="n">distilbert_test_ds</span> <span class="o">=</span> <span class="n">create_dataset</span><span class="p">(</span><span class="n">df_test</span><span class="p">,</span> <span class="n">distilbert_tokenizer</span><span class="p">,</span> <span class="n">MAX_LENGTH</span><span class="p">)</span>
+<span class="n">distilbert_val_ds</span> <span class="o">=</span> <span class="n">create_dataset</span><span class="p">(</span><span class="n">df_val</span><span class="p">,</span> <span class="n">distilbert_tokenizer</span><span class="p">,</span> <span class="n">MAX_LENGTH</span><span class="p">)</span>
+
+<span class="n">distilbert_train_dataloader</span> <span class="o">=</span> <span class="n">create_dataloader</span><span class="p">(</span><span class="n">distilbert_train_ds</span><span class="p">,</span> <span class="n">BATCH_SIZE</span><span class="p">)</span>
+<span class="n">distilbert_test_dataloader</span> <span class="o">=</span> <span class="n">create_dataloader</span><span class="p">(</span><span class="n">distilbert_test_ds</span><span class="p">,</span> <span class="n">BATCH_SIZE</span><span class="p">)</span>
+<span class="n">distilbert_val_dataloader</span> <span class="o">=</span> <span class="n">create_dataloader</span><span class="p">(</span><span class="n">distilbert_val_ds</span><span class="p">,</span> <span class="n">BATCH_SIZE</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">distilbert_train_ds</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;__main__.TweetDataset at 0x7f4961ff3670&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DistilBertForSequenceClassification</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pretrained_model_name</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="n">config</span> <span class="o">=</span> <span class="n">AutoConfig</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">pretrained_model_name</span><span class="p">,</span> <span class="n">num_labels</span><span class="o">=</span><span class="n">num_classes</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">distilbert</span> <span class="o">=</span> <span class="n">AutoModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">pretrained_model_name</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pre_classifier</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classifier</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">seq_classif_dropout</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">head_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="k">assert</span> <span class="n">attention_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;No Attention Mask&quot;</span>
+        <span class="n">distilbert_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">distilbert</span><span class="p">(</span><span class="n">input_ids</span><span class="o">=</span><span class="n">input_ids</span><span class="p">,</span>
+                                            <span class="n">attention_mask</span><span class="o">=</span><span class="n">attention_mask</span><span class="p">,</span>
+                                            <span class="n">head_mask</span><span class="o">=</span><span class="n">head_mask</span><span class="p">)</span>
+
+        <span class="n">hidden_state</span> <span class="o">=</span> <span class="n">distilbert_output</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  
+        <span class="n">pooled_output</span> <span class="o">=</span> <span class="n">hidden_state</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> 
+        <span class="n">pooled_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_classifier</span><span class="p">(</span><span class="n">pooled_output</span><span class="p">)</span>  
+        <span class="n">pooled_output</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">()(</span><span class="n">pooled_output</span><span class="p">)</span>  
+        <span class="n">pooled_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">pooled_output</span><span class="p">)</span>  
+        <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">classifier</span><span class="p">(</span><span class="n">pooled_output</span><span class="p">)</span>  
+
+        <span class="k">return</span> <span class="n">logits</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">distilbert_model</span> <span class="o">=</span> <span class="n">DistilBertForSequenceClassification</span><span class="p">(</span><span class="n">pretrained_model_name</span><span class="o">=</span><span class="n">DISTILBERT_MODEL_NAME</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="n">NUM_CLASSES</span><span class="p">)</span>
+<span class="n">distilbert_model</span> <span class="o">=</span> <span class="n">distilbert_model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id": "99d5250cb979411f8e91172ccca10eef", "version_major": 2, "version_minor": 0}
+</script><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id": "762cc910ee2646b5ace87b1512eb5b55", "version_major": 2, "version_minor": 0}
+</script><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">training_steps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">distilbert_train_dataloader</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span> <span class="o">*</span> <span class="n">EPOCHS</span>
+
+<span class="n">distilbert_optimizer</span> <span class="o">=</span> <span class="n">AdamW</span><span class="p">(</span><span class="n">distilbert_model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">LEARNING_RATE</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="n">WEIGHT_DECAY</span><span class="p">,</span> <span class="n">correct_bias</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">distilbert_scheduler</span> <span class="o">=</span> <span class="n">get_linear_schedule_with_warmup</span><span class="p">(</span><span class="n">distilbert_optimizer</span><span class="p">,</span> <span class="n">num_warmup_steps</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">training_steps</span><span class="p">),</span> <span class="n">num_training_steps</span><span class="o">=</span><span class="n">training_steps</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">device</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>device(type=&#39;cuda&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">distilbert_history</span><span class="p">,</span> <span class="n">distilbert_preds</span><span class="p">,</span> <span class="n">distilbert_outputs</span> <span class="o">=</span> <span class="n">train_fold</span><span class="p">(</span><span class="n">mlf_XP</span><span class="o">=</span><span class="s1">&#39;BERT&#39;</span><span class="p">,</span> 
+                                                                       <span class="n">xp_name_iter</span><span class="o">=</span><span class="s1">&#39;DistilBERT&#39;</span><span class="p">,</span>
+                                                                       <span class="n">epochs</span><span class="o">=</span><span class="n">EPOCHS</span><span class="p">,</span>
+                                                                       <span class="n">model</span><span class="o">=</span><span class="n">distilbert_model</span><span class="p">,</span>
+                                                                       <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> 
+                                                                       <span class="n">train_dataloader</span><span class="o">=</span><span class="n">distilbert_train_dataloader</span><span class="p">,</span> 
+                                                                       <span class="n">val_dataloader</span><span class="o">=</span><span class="n">distilbert_val_dataloader</span><span class="p">,</span>
+                                                                       <span class="n">test_dataloader</span><span class="o">=</span><span class="n">distilbert_test_dataloader</span><span class="p">,</span>
+                                                                       <span class="n">loss_fn</span><span class="o">=</span><span class="n">loss_function</span><span class="p">,</span>
+                                                                       <span class="n">optimizer</span><span class="o">=</span><span class="n">distilbert_optimizer</span><span class="p">,</span>
+                                                                       <span class="n">scheduler</span><span class="o">=</span><span class="n">distilbert_scheduler</span><span class="p">,</span>
+                                                                       <span class="n">model_save_name</span><span class="o">=</span><span class="s1">&#39;distilbest_best_model.bin&#39;</span><span class="p">,</span>
+                                                                       <span class="n">n_train</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">df_train</span><span class="p">),</span>
+                                                                       <span class="n">n_val</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">df_val</span><span class="p">),</span>
+                                                                       <span class="n">single_model</span><span class="o">=</span><span class="kc">True</span>
+                                                                      <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Epoch  1 / 5
+--------------------------------------------------
+Train Loss:  0.9396719512417153  |  Train Accuracy:  0.5367540029112081
+Val Loss:  0.6267227158816748  |  Val Accuracy:  0.7505458515283843
+Epoch Train Time:  0:02:09
+
+
+Epoch  2 / 5
+--------------------------------------------------
+Train Loss:  0.5887683325784696  |  Train Accuracy:  0.7622361717612809
+Val Loss:  0.5463424418987923  |  Val Accuracy:  0.7736535662299855
+Epoch Train Time:  0:02:07
+
+
+Epoch  3 / 5
+--------------------------------------------------
+Train Loss:  0.510728445874725  |  Train Accuracy:  0.7969887190684134
+Val Loss:  0.5309577705988358  |  Val Accuracy:  0.7862081513828238
+Epoch Train Time:  0:02:07
+
+
+Epoch  4 / 5
+--------------------------------------------------
+Train Loss:  0.44334969244723843  |  Train Accuracy:  0.8310134643377002
+Val Loss:  0.578479872539986  |  Val Accuracy:  0.7860262008733624
+Epoch Train Time:  0:02:07
+
+
+Epoch  5 / 5
+--------------------------------------------------
+Train Loss:  0.37767219023570264  |  Train Accuracy:  0.8633096797671034
+Val Loss:  0.6317601318167912  |  Val Accuracy:  0.7809315866084425
+Epoch Train Time:  0:02:06
+
+
+Finished Training.
+Fold Train Time:  0:10:37
+
+
+[[ 790  189   22]
+ [ 206 1087  137]
+ [  26  187  890]]
+
+              precision    recall  f1-score   support
+
+    negative      0.773     0.789     0.781      1001
+     neutral      0.743     0.760     0.751      1430
+    positive      0.848     0.807     0.827      1103
+
+    accuracy                          0.783      3534
+   macro avg      0.788     0.785     0.787      3534
+weighted avg      0.784     0.783     0.783      3534
+</pre></div>
+</div>
+<img alt="../_images/nn_77_1.png" src="../_images/nn_77_1.png" />
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>DistilBERT tient toutes ses promesses, il présente un f1 macro de <strong>78,7%</strong> pour un temps 2 fois moindre</p>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>modèle</th>
+      <th>f1_macro_val</th>
+      <th>f1_macro_test</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>DistilBERT</td>
+      <td>NaN</td>
+      <td>0.787000</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>BERT</td>
+      <td>NaN</td>
+      <td>0.777000</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>roBERTa_xgb_opti_</td>
+      <td>0.759147</td>
+      <td>0.759953</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>roBERTa_Blob_Vader_RF_opti_</td>
+      <td>0.756699</td>
+      <td>0.750216</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>roBERTa_RF_opti_</td>
+      <td>0.746630</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>TfIdf_LR_opti_modif_seuil</td>
+      <td>0.709477</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>base_TfIdf_RF_prepro_</td>
+      <td>0.707919</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>base_TfIdf_RF_prepro_opti_</td>
+      <td>0.706432</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>roBERTa_RF_</td>
+      <td>0.705912</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>TfIdf_LR_opti_</td>
+      <td>0.699877</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>TfIdf_LR_prepro_opti_</td>
+      <td>0.698565</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>base_TfIdf_RF_</td>
+      <td>0.669789</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</div>
+<div class="section" id="fold-cv">
+<h4><span class="section-number">5.3.4.2. </span>10-Fold CV<a class="headerlink" href="#fold-cv" title="Permalink to this headline">¶</a></h4>
+<p>Le temps d’ajustement étant relativement court, on peut se permettre de faire un modèle ensembliste à partir d’un ajustement 10-fold</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">distilbert_history</span><span class="p">,</span> <span class="n">distilbert_test_outputs</span> <span class="o">=</span> <span class="n">get_oof_and_test_preds</span><span class="p">(</span><span class="n">mlf_XP</span><span class="o">=</span><span class="s1">&#39;DistilBERT_10Fold&#39;</span><span class="p">,</span>
+                                                                     <span class="n">model_type</span><span class="o">=</span><span class="s1">&#39;distilbert&#39;</span><span class="p">,</span> 
+                                                                     <span class="n">tokenizer</span><span class="o">=</span><span class="n">distilbert_tokenizer</span><span class="p">,</span> 
+                                                                     <span class="n">train_df</span><span class="o">=</span><span class="n">df_train_full</span><span class="p">,</span> 
+                                                                     <span class="n">test_df</span><span class="o">=</span><span class="n">df_test</span><span class="p">,</span>
+                                                                     <span class="n">single_model</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Fold: 1
+Epoch  1 / 5
+--------------------------------------------------
+Train Loss:  0.941926259658315  |  Train Accuracy:  0.522400129387029
+Val Loss:  0.6203636002055434  |  Val Accuracy:  0.7558224163027657
+Epoch Train Time:  0:02:25
+
+
+Epoch  2 / 5
+--------------------------------------------------
+Train Loss:  0.580964529094073  |  Train Accuracy:  0.7636665049328805
+Val Loss:  0.5477447283649167  |  Val Accuracy:  0.7776564774381368
+Epoch Train Time:  0:02:18
+
+
+Epoch  3 / 5
+--------------------------------------------------
+Train Loss:  0.5048014043286964  |  Train Accuracy:  0.7982371017305515
+Val Loss:  0.545227823259179  |  Val Accuracy:  0.7900291120815138
+Epoch Train Time:  0:02:16
+
+
+Epoch  4 / 5
+--------------------------------------------------
+Train Loss:  0.44333723517084184  |  Train Accuracy:  0.8298964903768398
+Val Loss:  0.5853824304893266  |  Val Accuracy:  0.7863901018922853
+Epoch Train Time:  0:02:15
+
+
+Epoch  5 / 5
+--------------------------------------------------
+Train Loss:  0.3777913040834519  |  Train Accuracy:  0.8617176128093159
+Val Loss:  0.6538275292273178  |  Val Accuracy:  0.784570596797671
+Epoch Train Time:  0:02:15
+
+
+Finished Training.
+Fold Train Time:  0:11:30
+
+
+Fold: 2
+Epoch  1 / 5
+--------------------------------------------------
+Train Loss:  0.9205003487377549  |  Train Accuracy:  0.5397865114022319
+Val Loss:  0.6180462270628574  |  Val Accuracy:  0.7456331877729258
+Epoch Train Time:  0:02:17
+
+
+Epoch  2 / 5
+--------------------------------------------------
+Train Loss:  0.579977193917178  |  Train Accuracy:  0.7666181465308103
+Val Loss:  0.5480122222716726  |  Val Accuracy:  0.7762008733624454
+Epoch Train Time:  0:02:17
+
+
+Epoch  3 / 5
+--------------------------------------------------
+Train Loss:  0.5064557375046599  |  Train Accuracy:  0.7976306000323468
+Val Loss:  0.5441750175384588  |  Val Accuracy:  0.7878457059679768
+Epoch Train Time:  0:02:16
+
+
+Epoch  4 / 5
+--------------------------------------------------
+Train Loss:  0.44550948646425587  |  Train Accuracy:  0.8284813197476953
+Val Loss:  0.5777701539702194  |  Val Accuracy:  0.7918486171761281
+Epoch Train Time:  0:02:17
+
+
+Epoch  5 / 5
+--------------------------------------------------
+Train Loss:  0.3740355369091554  |  Train Accuracy:  0.8634562510108361
+Val Loss:  0.6463065561188688  |  Val Accuracy:  0.787117903930131
+Epoch Train Time:  0:02:15
+
+
+Finished Training.
+Fold Train Time:  0:11:22
+
+
+Fold: 3
+Epoch  1 / 5
+--------------------------------------------------
+Train Loss:  0.9184577913827143  |  Train Accuracy:  0.5359453339802684
+Val Loss:  0.6066395441113517  |  Val Accuracy:  0.7554585152838428
+Epoch Train Time:  0:02:17
+
+
+Epoch  2 / 5
+--------------------------------------------------
+Train Loss:  0.5813285425054765  |  Train Accuracy:  0.7635047711466926
+Val Loss:  0.5406240603431712  |  Val Accuracy:  0.7852983988355168
+Epoch Train Time:  0:02:17
+
+
+Epoch  3 / 5
+--------------------------------------------------
+Train Loss:  0.5067589409977082  |  Train Accuracy:  0.7990862041080382
+Val Loss:  0.5343165016451548  |  Val Accuracy:  0.7914847161572053
+Epoch Train Time:  0:02:17
+
+
+Epoch  4 / 5
+--------------------------------------------------
+Train Loss:  0.4455857805083632  |  Train Accuracy:  0.8299773572699337
+Val Loss:  0.5721239838315997  |  Val Accuracy:  0.7918486171761281
+Epoch Train Time:  0:02:16
+
+
+Epoch  5 / 5
+--------------------------------------------------
+Train Loss:  0.3778618352793707  |  Train Accuracy:  0.8634562510108361
+Val Loss:  0.6522320938015054  |  Val Accuracy:  0.7885735080058224
+Epoch Train Time:  0:02:16
+
+
+Finished Training.
+Fold Train Time:  0:11:22
+
+
+Fold: 4
+Epoch  1 / 5
+--------------------------------------------------
+Train Loss:  0.9359287480988755  |  Train Accuracy:  0.5133834708070516
+Val Loss:  0.6244141412682311  |  Val Accuracy:  0.745269286754003
+Epoch Train Time:  0:02:16
+
+
+Epoch  2 / 5
+--------------------------------------------------
+Train Loss:  0.5799717282416132  |  Train Accuracy:  0.7639091056121624
+Val Loss:  0.5602689084358686  |  Val Accuracy:  0.774745269286754
+Epoch Train Time:  0:02:16
+
+
+Epoch  3 / 5
+--------------------------------------------------
+Train Loss:  0.505196814004809  |  Train Accuracy:  0.7991670710011322
+Val Loss:  0.5649052176971076  |  Val Accuracy:  0.7791120815138283
+Epoch Train Time:  0:02:17
+
+
+Epoch  4 / 5
+--------------------------------------------------
+Train Loss:  0.4425473887989006  |  Train Accuracy:  0.8301795245026686
+Val Loss:  0.6196258552805629  |  Val Accuracy:  0.7834788937409025
+Epoch Train Time:  0:02:17
+
+
+Epoch  5 / 5
+--------------------------------------------------
+Train Loss:  0.37172359224399226  |  Train Accuracy:  0.864022319262494
+Val Loss:  0.7073620971465526  |  Val Accuracy:  0.774745269286754
+Epoch Train Time:  0:02:15
+
+
+Finished Training.
+Fold Train Time:  0:11:22
+
+
+Fold: 5
+Epoch  1 / 5
+--------------------------------------------------
+Train Loss:  0.9415115041689608  |  Train Accuracy:  0.5170629144428271
+Val Loss:  0.6350645698433699  |  Val Accuracy:  0.7434497816593887
+Epoch Train Time:  0:02:17
+
+
+Epoch  2 / 5
+--------------------------------------------------
+Train Loss:  0.5827579239014666  |  Train Accuracy:  0.7607957302280446
+Val Loss:  0.5471963639869246  |  Val Accuracy:  0.7867540029112081
+Epoch Train Time:  0:02:17
+
+
+Epoch  3 / 5
+--------------------------------------------------
+Train Loss:  0.5057246983581419  |  Train Accuracy:  0.7993692382338671
+Val Loss:  0.5351174239848935  |  Val Accuracy:  0.7998544395924309
+Epoch Train Time:  0:02:17
+
+
+Epoch  4 / 5
+--------------------------------------------------
+Train Loss:  0.4470801455044654  |  Train Accuracy:  0.8266213812065341
+Val Loss:  0.5497014267413423  |  Val Accuracy:  0.7991266375545851
+Epoch Train Time:  0:02:15
+
+
+Epoch  5 / 5
+--------------------------------------------------
+Train Loss:  0.37871522154962645  |  Train Accuracy:  0.86139414523694
+Val Loss:  0.6404869829759349  |  Val Accuracy:  0.7962154294032023
+Epoch Train Time:  0:02:16
+
+
+Finished Training.
+Fold Train Time:  0:11:21
+
+
+Fold: 6
+Epoch  1 / 5
+--------------------------------------------------
+Train Loss:  0.9295003596129423  |  Train Accuracy:  0.5452045932395277
+Val Loss:  0.6083728503002677  |  Val Accuracy:  0.75509461426492
+Epoch Train Time:  0:02:16
+
+
+Epoch  2 / 5
+--------------------------------------------------
+Train Loss:  0.5811521254605186  |  Train Accuracy:  0.7621300339640951
+Val Loss:  0.5365904703909574  |  Val Accuracy:  0.784570596797671
+Epoch Train Time:  0:02:16
+
+
+Epoch  3 / 5
+--------------------------------------------------
+Train Loss:  0.5050301146952563  |  Train Accuracy:  0.7982775351770985
+Val Loss:  0.5421336143342561  |  Val Accuracy:  0.7867540029112081
+Epoch Train Time:  0:02:17
+
+
+Epoch  4 / 5
+--------------------------------------------------
+Train Loss:  0.4430553875285241  |  Train Accuracy:  0.8300582241630277
+Val Loss:  0.5596038565732712  |  Val Accuracy:  0.7958515283842795
+Epoch Train Time:  0:02:16
+
+
+Epoch  5 / 5
+--------------------------------------------------
+Train Loss:  0.3792365301860663  |  Train Accuracy:  0.8621623807213327
+Val Loss:  0.634867753075479  |  Val Accuracy:  0.7893013100436681
+Epoch Train Time:  0:02:16
+
+
+Finished Training.
+Fold Train Time:  0:11:22
+
+
+Fold: 7
+Epoch  1 / 5
+--------------------------------------------------
+Train Loss:  0.9052738494313242  |  Train Accuracy:  0.5478732007116287
+Val Loss:  0.6165331214839636  |  Val Accuracy:  0.7536390101892285
+Epoch Train Time:  0:02:17
+
+
+Epoch  2 / 5
+--------------------------------------------------
+Train Loss:  0.5792397190401039  |  Train Accuracy:  0.7655264434740418
+Val Loss:  0.5519887229730917  |  Val Accuracy:  0.7812954876273653
+Epoch Train Time:  0:02:16
+
+
+Epoch  3 / 5
+--------------------------------------------------
+Train Loss:  0.503106549497872  |  Train Accuracy:  0.7999757399320718
+Val Loss:  0.5589800931859848  |  Val Accuracy:  0.7842066957787481
+Epoch Train Time:  0:02:16
+
+
+Epoch  4 / 5
+--------------------------------------------------
+Train Loss:  0.4417677537561003  |  Train Accuracy:  0.8299773572699337
+Val Loss:  0.5645578062205121  |  Val Accuracy:  0.7947598253275109
+Epoch Train Time:  0:02:17
+
+
+Epoch  5 / 5
+--------------------------------------------------
+Train Loss:  0.3713598938401003  |  Train Accuracy:  0.8643457868348698
+Val Loss:  0.6417522168783254  |  Val Accuracy:  0.7903930131004366
+Epoch Train Time:  0:02:15
+
+
+Finished Training.
+Fold Train Time:  0:11:21
+
+
+Fold: 8
+Epoch  1 / 5
+--------------------------------------------------
+Train Loss:  0.9064137189423745  |  Train Accuracy:  0.56420831311661
+Val Loss:  0.60685450930235  |  Val Accuracy:  0.75254730713246
+Epoch Train Time:  0:02:17
+
+
+Epoch  2 / 5
+--------------------------------------------------
+Train Loss:  0.5819097766255114  |  Train Accuracy:  0.7641517062914442
+Val Loss:  0.531711004327896  |  Val Accuracy:  0.7812954876273653
+Epoch Train Time:  0:02:17
+
+
+Epoch  3 / 5
+--------------------------------------------------
+Train Loss:  0.5045987542087326  |  Train Accuracy:  0.7986818696425684
+Val Loss:  0.5272369070281816  |  Val Accuracy:  0.7918486171761281
+Epoch Train Time:  0:02:17
+
+
+Epoch  4 / 5
+--------------------------------------------------
+Train Loss:  0.44432073352041557  |  Train Accuracy:  0.8300986576095747
+Val Loss:  0.5473811943084002  |  Val Accuracy:  0.7940320232896652
+Epoch Train Time:  0:02:16
+
+
+Epoch  5 / 5
+--------------------------------------------------
+Train Loss:  0.3745883988724952  |  Train Accuracy:  0.8643457868348698
+Val Loss:  0.6393082001094901  |  Val Accuracy:  0.7831149927219796
+Epoch Train Time:  0:02:16
+
+
+Finished Training.
+Fold Train Time:  0:11:22
+
+
+Fold: 9
+Epoch  1 / 5
+--------------------------------------------------
+Train Loss:  0.9189361214522094  |  Train Accuracy:  0.5487223030891153
+Val Loss:  0.6407536754254685  |  Val Accuracy:  0.7245269286754003
+Epoch Train Time:  0:02:17
+
+
+Epoch  2 / 5
+--------------------------------------------------
+Train Loss:  0.5772791211655963  |  Train Accuracy:  0.7660520782791526
+Val Loss:  0.582675036476102  |  Val Accuracy:  0.7612809315866085
+Epoch Train Time:  0:02:16
+
+
+Epoch  3 / 5
+--------------------------------------------------
+Train Loss:  0.5016376986608083  |  Train Accuracy:  0.8010674429888404
+Val Loss:  0.6005498271782038  |  Val Accuracy:  0.7711062590975255
+Epoch Train Time:  0:02:16
+
+
+Epoch  4 / 5
+--------------------------------------------------
+Train Loss:  0.43999696849697156  |  Train Accuracy:  0.8320394630438298
+Val Loss:  0.6376301472963288  |  Val Accuracy:  0.7641921397379913
+Epoch Train Time:  0:02:16
+
+
+Epoch  5 / 5
+--------------------------------------------------
+Train Loss:  0.3717861590728665  |  Train Accuracy:  0.8649522885330746
+Val Loss:  0.7558341780894025  |  Val Accuracy:  0.7634643377001455
+Epoch Train Time:  0:02:15
+
+
+Finished Training.
+Fold Train Time:  0:11:20
+
+
+Fold: 10
+Epoch  1 / 5
+--------------------------------------------------
+Train Loss:  0.9245070222124245  |  Train Accuracy:  0.5524826136179848
+Val Loss:  0.6224677699596383  |  Val Accuracy:  0.74745269286754
+Epoch Train Time:  0:02:17
+
+
+Epoch  2 / 5
+--------------------------------------------------
+Train Loss:  0.5746363384160003  |  Train Accuracy:  0.7660520782791526
+Val Loss:  0.545842379764762  |  Val Accuracy:  0.777292576419214
+Epoch Train Time:  0:02:16
+
+
+Epoch  3 / 5
+--------------------------------------------------
+Train Loss:  0.5028234107364427  |  Train Accuracy:  0.8005013747371826
+Val Loss:  0.5520749990503455  |  Val Accuracy:  0.784570596797671
+Epoch Train Time:  0:02:17
+
+
+Epoch  4 / 5
+--------------------------------------------------
+Train Loss:  0.44011698519861636  |  Train Accuracy:  0.8330502992075044
+Val Loss:  0.5861991313394419  |  Val Accuracy:  0.7885735080058224
+Epoch Train Time:  0:02:16
+
+
+Epoch  5 / 5
+--------------------------------------------------
+Train Loss:  0.3778763751934293  |  Train Accuracy:  0.8624454148471615
+Val Loss:  0.6675134595093686  |  Val Accuracy:  0.7816593886462883
+Epoch Train Time:  0:02:16
+
+
+Finished Training.
+Fold Train Time:  0:11:22
+
+
+10 Fold CV Train Time:  1:54:57
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cv_ensemble_performance</span><span class="p">(</span><span class="n">distilbert_test_outputs</span><span class="p">,</span> <span class="n">df_test</span><span class="p">[</span><span class="s1">&#39;sentiment&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[ 739  235   27]
+ [ 148 1123  159]
+ [  20  165  918]]
+
+              precision    recall  f1-score   support
+
+    negative      0.815     0.738     0.775      1001
+     neutral      0.737     0.785     0.761      1430
+    positive      0.832     0.832     0.832      1103
+
+    accuracy                          0.787      3534
+   macro avg      0.795     0.785     0.789      3534
+weighted avg      0.789     0.787     0.787      3534
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>DistilBERT 10 fold présente un f1 macro à peine amélioré <strong>78,9%</strong> pour un temps <strong>11,5</strong> fois plus important !</p>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>modèle</th>
+      <th>f1_macro_val</th>
+      <th>f1_macro_test</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>DistilBERT_10-fold</td>
+      <td>NaN</td>
+      <td>0.789000</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>DistilBERT</td>
+      <td>NaN</td>
+      <td>0.787000</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>BERT</td>
+      <td>NaN</td>
+      <td>0.777000</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>roBERTa_xgb_opti_</td>
+      <td>0.759147</td>
+      <td>0.759953</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>roBERTa_Blob_Vader_RF_opti_</td>
+      <td>0.756699</td>
+      <td>0.750216</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>roBERTa_RF_opti_</td>
+      <td>0.746630</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>TfIdf_LR_opti_modif_seuil</td>
+      <td>0.709477</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>base_TfIdf_RF_prepro_</td>
+      <td>0.707919</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>base_TfIdf_RF_prepro_opti_</td>
+      <td>0.706432</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>roBERTa_RF_</td>
+      <td>0.705912</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>TfIdf_LR_opti_</td>
+      <td>0.699877</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>TfIdf_LR_prepro_opti_</td>
+      <td>0.698565</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>base_TfIdf_RF_</td>
+      <td>0.669789</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</div>
+</div>
+<div class="section" id="roberta">
+<h3><span class="section-number">5.3.5. </span>RoBERTa<a class="headerlink" href="#roberta" title="Permalink to this headline">¶</a></h3>
+<p>Le dernier modèle testé est RoBERTa</p>
+<div class="section" id="id2">
+<h4><span class="section-number">5.3.5.1. </span>Single Model<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">del</span> <span class="n">bert_model</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">empty_cache</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ROBERTA_MODEL_NAME</span> <span class="o">=</span> <span class="s1">&#39;roberta-base&#39;</span>
+<span class="n">roberta_tokenizer</span> <span class="o">=</span> <span class="n">RobertaTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">ROBERTA_MODEL_NAME</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">roberta_train_ds</span> <span class="o">=</span> <span class="n">create_dataset</span><span class="p">(</span><span class="n">df_train</span><span class="p">,</span> <span class="n">roberta_tokenizer</span><span class="p">,</span> <span class="n">MAX_LENGTH</span><span class="p">)</span>
+<span class="n">roberta_test_ds</span> <span class="o">=</span> <span class="n">create_dataset</span><span class="p">(</span><span class="n">df_test</span><span class="p">,</span> <span class="n">roberta_tokenizer</span><span class="p">,</span> <span class="n">MAX_LENGTH</span><span class="p">)</span>
+<span class="n">roberta_val_ds</span> <span class="o">=</span> <span class="n">create_dataset</span><span class="p">(</span><span class="n">df_val</span><span class="p">,</span> <span class="n">roberta_tokenizer</span><span class="p">,</span> <span class="n">MAX_LENGTH</span><span class="p">)</span>
+
+<span class="n">roberta_train_dataloader</span> <span class="o">=</span> <span class="n">create_dataloader</span><span class="p">(</span><span class="n">roberta_train_ds</span><span class="p">,</span> <span class="n">BATCH_SIZE</span><span class="p">)</span>
+<span class="n">roberta_test_dataloader</span> <span class="o">=</span> <span class="n">create_dataloader</span><span class="p">(</span><span class="n">roberta_test_ds</span><span class="p">,</span> <span class="n">BATCH_SIZE</span><span class="p">)</span>
+<span class="n">roberta_val_dataloader</span> <span class="o">=</span> <span class="n">create_dataloader</span><span class="p">(</span><span class="n">roberta_val_ds</span><span class="p">,</span> <span class="n">BATCH_SIZE</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">RobertaSentimentClassifier</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_classes</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">RobertaSentimentClassifier</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">RobertaModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">ROBERTA_MODEL_NAME</span><span class="p">,</span> <span class="n">return_dict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1">#ATTENTION : il faut rajouter return_dict=False ici cf https://huggingface.co/transformers/migration.html</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drop</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">DROPOUT_PROB</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">,</span> <span class="n">n_classes</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="p">):</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">pooled_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span>
+            <span class="n">input_ids</span> <span class="o">=</span> <span class="n">input_ids</span><span class="p">,</span>
+            <span class="n">attention_mask</span><span class="o">=</span><span class="n">attention_mask</span>
+        <span class="p">)</span>
+        
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">pooled_output</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">roberta_model</span> <span class="o">=</span> <span class="n">RobertaSentimentClassifier</span><span class="p">(</span><span class="n">n_classes</span><span class="o">=</span><span class="n">NUM_CLASSES</span><span class="p">)</span>
+<span class="n">roberta_model</span> <span class="o">=</span> <span class="n">roberta_model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">training_steps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">roberta_train_dataloader</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span> <span class="o">*</span> <span class="n">EPOCHS</span>
+
+<span class="n">roberta_optimizer</span> <span class="o">=</span> <span class="n">AdamW</span><span class="p">(</span><span class="n">roberta_model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">LEARNING_RATE</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="n">WEIGHT_DECAY</span><span class="p">,</span> <span class="n">correct_bias</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">roberta_scheduler</span> <span class="o">=</span> <span class="n">get_linear_schedule_with_warmup</span><span class="p">(</span><span class="n">roberta_optimizer</span><span class="p">,</span> <span class="n">num_warmup_steps</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">training_steps</span><span class="p">),</span> <span class="n">num_training_steps</span><span class="o">=</span><span class="n">training_steps</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">roberta_single_model_items</span> <span class="o">=</span> <span class="n">train_fold</span><span class="p">(</span>  
+                                          <span class="n">mlf_XP</span><span class="o">=</span><span class="s1">&#39;RoBERTa&#39;</span><span class="p">,</span> 
+                                          <span class="n">xp_name_iter</span><span class="o">=</span><span class="s1">&#39;RoBERTa&#39;</span><span class="p">,</span>
+                                          <span class="n">epochs</span><span class="o">=</span><span class="n">EPOCHS</span><span class="p">,</span>
+                                          <span class="n">model</span><span class="o">=</span><span class="n">roberta_model</span><span class="p">,</span>
+                                          <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> 
+                                          <span class="n">train_dataloader</span><span class="o">=</span><span class="n">roberta_train_dataloader</span><span class="p">,</span> 
+                                          <span class="n">val_dataloader</span><span class="o">=</span><span class="n">roberta_val_dataloader</span><span class="p">,</span>
+                                          <span class="n">test_dataloader</span><span class="o">=</span><span class="n">roberta_test_dataloader</span><span class="p">,</span>
+                                          <span class="n">loss_fn</span><span class="o">=</span><span class="n">loss_function</span><span class="p">,</span>
+                                          <span class="n">optimizer</span><span class="o">=</span><span class="n">roberta_optimizer</span><span class="p">,</span>
+                                          <span class="n">scheduler</span><span class="o">=</span><span class="n">roberta_scheduler</span><span class="p">,</span>
+                                          <span class="n">model_save_name</span><span class="o">=</span><span class="s1">&#39;roberta_best_model.bin&#39;</span><span class="p">,</span>
+                                          <span class="n">n_train</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">df_train</span><span class="p">),</span>
+                                          <span class="n">n_val</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">df_val</span><span class="p">),</span>
+                                          <span class="n">single_model</span><span class="o">=</span><span class="kc">True</span>
+                                         <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Epoch  1 / 5
+--------------------------------------------------
+Train Loss:  0.9043195859205081  |  Train Accuracy:  0.5254275836972343
+Val Loss:  0.5874736773846454  |  Val Accuracy:  0.7574599708879185
+Epoch Train Time:  0:09:34
+
+
+Epoch  2 / 5
+--------------------------------------------------
+Train Loss:  0.5546561090012652  |  Train Accuracy:  0.7763373362445415
+Val Loss:  0.5240757602678482  |  Val Accuracy:  0.7867540029112081
+Epoch Train Time:  0:09:30
+
+
+Epoch  3 / 5
+--------------------------------------------------
+Train Loss:  0.48944837608126573  |  Train Accuracy:  0.8069050218340611
+Val Loss:  0.5171312416232255  |  Val Accuracy:  0.787117903930131
+Epoch Train Time:  0:09:31
+
+
+Epoch  4 / 5
+--------------------------------------------------
+Train Loss:  0.43777817099733385  |  Train Accuracy:  0.8314683406113537
+Val Loss:  0.5419738723484929  |  Val Accuracy:  0.7860262008733624
+Epoch Train Time:  0:09:28
+
+
+Epoch  5 / 5
+--------------------------------------------------
+Train Loss:  0.38452990322605624  |  Train Accuracy:  0.8561681222707423
+Val Loss:  0.6697040315565848  |  Val Accuracy:  0.7749272197962155
+Epoch Train Time:  0:09:30
+
+
+Finished Training.
+Fold Train Time:  0:47:33
+
+
+[[ 771  193   37]
+ [ 159 1066  205]
+ [  19  128  956]]
+
+              precision    recall  f1-score   support
+
+    negative      0.812     0.770     0.791      1001
+     neutral      0.769     0.745     0.757      1430
+    positive      0.798     0.867     0.831      1103
+
+    accuracy                          0.790      3534
+   macro avg      0.793     0.794     0.793      3534
+weighted avg      0.790     0.790     0.790      3534
+</pre></div>
+</div>
+<img alt="../_images/nn_99_1.png" src="../_images/nn_99_1.png" />
+</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>RoBERTa est très lent à ajuster (47 min vs 10 min pour DistilBERT). Par contre il présente un f1 macro amélioré à <strong>79,3%</strong></p>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>modèle</th>
+      <th>f1_macro_val</th>
+      <th>f1_macro_test</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>RoBERTa</td>
+      <td>NaN</td>
+      <td>0.793000</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>DistilBERT_10-fold</td>
+      <td>NaN</td>
+      <td>0.789000</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>DistilBERT</td>
+      <td>NaN</td>
+      <td>0.787000</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>BERT</td>
+      <td>NaN</td>
+      <td>0.777000</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>roBERTa_xgb_opti_</td>
+      <td>0.759147</td>
+      <td>0.759953</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>roBERTa_Blob_Vader_RF_opti_</td>
+      <td>0.756699</td>
+      <td>0.750216</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>roBERTa_RF_opti_</td>
+      <td>0.746630</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>TfIdf_LR_opti_modif_seuil</td>
+      <td>0.709477</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>base_TfIdf_RF_prepro_</td>
+      <td>0.707919</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>base_TfIdf_RF_prepro_opti_</td>
+      <td>0.706432</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>roBERTa_RF_</td>
+      <td>0.705912</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>TfIdf_LR_opti_</td>
+      <td>0.699877</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>TfIdf_LR_prepro_opti_</td>
+      <td>0.698565</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>base_TfIdf_RF_</td>
+      <td>0.669789</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        
+        <div class='prev-next-bottom'>
+            
+    <a class='left-prev' id="prev-link" href="test%204-mod.html" title="previous page"><span class="section-number">4. </span>Modélisation</a>
+    <a class='right-next' id="next-link" href="5-%20Enseignements.html" title="next page"><span class="section-number">6. </span>Enseignements et pistes d’amélioration</a>
+
+        </div>
+        
+        </div>
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Fabien Faivre<br/>
+        
+            &copy; Copyright 2021.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
+
+  
+  </body>
+</html>

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>5. Enseignements et pistes d’amélioration &#8212; DSA 2021 - TD Sentiment Twitter</title>
+    <title>6. Enseignements et pistes d’amélioration &#8212; DSA 2021 - TD Sentiment Twitter</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet" />
   <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -52,7 +52,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="4. Modélisation" href="test%204-mod.html" />
+    <link rel="prev" title="5. Un dernier Essai : BERT" href="nn.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
     
@@ -127,9 +127,14 @@
    4. Modélisation
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="nn.html">
+   5. Un dernier Essai : BERT
+  </a>
+ </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   5. Enseignements et pistes d’amélioration
+   6. Enseignements et pistes d’amélioration
   </a>
  </li>
 </ul>
@@ -239,8 +244,11 @@
         
               <div>
                 
-  <div class="section" id="enseignements-et-pistes-d-amelioration">
-<h1><span class="section-number">5. </span>Enseignements et pistes d’amélioration<a class="headerlink" href="#enseignements-et-pistes-d-amelioration" title="Permalink to this headline">¶</a></h1>
+  <hr class="docutils" />
+<p><strong>TD DSA 2021 de Antoine Ly   -   rapport de Fabien Faivre</strong></p>
+<hr class="docutils" />
+<div class="section" id="enseignements-et-pistes-d-amelioration">
+<h1><span class="section-number">6. </span>Enseignements et pistes d’amélioration<a class="headerlink" href="#enseignements-et-pistes-d-amelioration" title="Permalink to this headline">¶</a></h1>
 <p>Plusieurs modèle ont été testés. Le modèle champion est un XGBoost optimisé s’appuyant sur une combinaison de features créées à partir de modèles pré entrainé dont roBERTa tweet.
 Ce modèle permet d’atteindre un f1 macro de <strong>76%</strong> sur le jeu test</p>
 <div class="cell tag_remove-input docutils container">
@@ -269,6 +277,30 @@ Ce modèle permet d’atteindre un f1 macro de <strong>76%</strong> sur le jeu t
     </tr>
   </thead>
   <tbody>
+    <tr>
+      <th>0</th>
+      <td>RoBERTa</td>
+      <td>NaN</td>
+      <td>0.793000</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>DistilBERT_10-fold</td>
+      <td>NaN</td>
+      <td>0.789000</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>DistilBERT</td>
+      <td>NaN</td>
+      <td>0.787000</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>BERT</td>
+      <td>NaN</td>
+      <td>0.777000</td>
+    </tr>
     <tr>
       <th>0</th>
       <td>roBERTa_xgb_opti_</td>
@@ -334,22 +366,24 @@ Ce modèle permet d’atteindre un f1 macro de <strong>76%</strong> sur le jeu t
 </div></div></div>
 </div>
 <p>Ce projet a été une constant source d’étonnement.</p>
-<p>Le fait de disposer de 3 classes à prédire a été un élément complexifiant par rapport au cas binaire (pas de courbe ROC générale). On devient beaucoup plus dépendant des chiffres.</p>
+<p>Le fait de disposer de 3 classes à prédire a été un élément complexifiant par rapport au cas binaire. L’absence de courbe ROC nous rend beaucoup plus dépendant des chiffres.</p>
 <p>Après la découverte de <a class="reference external" href="https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment">twitter-roberta-base-sentiment</a>, je pensais que le sujet serait plié. Après tout ce modèle a été entrainé explicitement pour ce cas (58 millions de tweets, en anglais et optimisé pour l’analyse de sentiments). Je pensais voir le f1 macro s’envoler, ce qui n’a pas été le cas. Le modèle a bien aidé, mais le gain est resté modeste (6 points de f1 macro par rapport aux approches fréquentistes classiques).</p>
 <p>Au final en analysant les fausses prédictions, on réalise que la labelisation de plusieurs tweets laisse songeur.
 Ceci met en lumière le fait que l’appréciation de la tonalité n’est pas toujours évidente et que des erreurs humaines peuvent en plus se glisser.
 Si ce phénomène existe déjà pour les catégories extrèmes (<code class="docutils literal notranslate"><span class="pre">positif</span></code> et <code class="docutils literal notranslate"><span class="pre">négatif</span></code>) on imagine la sensibilité pour la classe générique <code class="docutils literal notranslate"><span class="pre">neutre</span></code>…</p>
 <p>Par ailleurs rien n’indique que la stratégie de labellisation utilisé dans ce cas corresponde à celle utilisée pour le pré entrainement de roBERTa tweet.</p>
+<p>Après un acquis de conscience, un entrainement réel d’un modèle de deep learning s’appuyant sur les modèles préentrainées <code class="docutils literal notranslate"><span class="pre">BERT</span></code>, <code class="docutils literal notranslate"><span class="pre">DistilBERT</span></code> et surtout <code class="docutils literal notranslate"><span class="pre">RoBERTa</span></code> en en réentrainant la dernière couche pour le sujet étudié a de loin présenté le meilleur gain (+3,4% de f1_macro par rapport au modèle RoBERTa utilisé directement en entrée d’un modèle classique). Ce gain est vraisemblablement à mettre au crédit de la dimention plus élevée de l’avant dernière couche et à la labellisation spéciale du projet.</p>
 <p>Deux pistes auraient pu être explorées pour améliorer la performance :</p>
 <ul class="simple">
-<li><p>véritablement réentrainer la dernière couche de BERT sur le jeu de donénes pour apprendre la logique de classification</p></li>
-<li><p>potentiellement modéliser le sujet discuté dans les twwets et le rajouter comme feature. On avait en effet vu que les tweets positifs par exemple se rapportaient principalement à la fête des mère et au <code class="docutils literal notranslate"><span class="pre">star</span> <span class="pre">wars</span> <span class="pre">day</span></code></p></li>
+<li><p>potentiellement modéliser le sujet discuté dans les tweets et le rajouter comme feature. On avait en effet vu que les tweets positifs par exemple se rapportaient principalement à la fête des mère et au <code class="docutils literal notranslate"><span class="pre">star</span> <span class="pre">wars</span> <span class="pre">day</span></code></p></li>
+<li><p>effectivement utiliser un modèle ensembliste y compris avec <code class="docutils literal notranslate"><span class="pre">RoBERTa</span></code> rendu impossible ici du fait du temps d’exécution et de la limiattion du matériel utilisé.</p></li>
 </ul>
 <p>Enfin ce sujet a été l’occasion de se frotter à plusieurs difficultés techniques liées principalement :</p>
 <ul class="simple">
 <li><p>à l’utilisation de ressources GPU depuis docker</p></li>
 <li><p>à l’utilisation des GPU pour XGBoost (non pris en compte par défaut)</p></li>
 <li><p>aux pipelines sklearn, pratiques mais pas toujours compatibles avec les packages (ex SHAP) et nécessitant souvent des créations de classes ad-hoc</p></li>
+<li><p>une première confrontation réelle avec les modèles de Deep Learning.</p></li>
 </ul>
 </div>
 
@@ -378,7 +412,7 @@ Si ce phénomène existe déjà pour les catégories extrèmes (<code class="doc
         
         <div class='prev-next-bottom'>
             
-    <a class='left-prev' id="prev-link" href="test%204-mod.html" title="previous page"><span class="section-number">4. </span>Modélisation</a>
+    <a class='left-prev' id="prev-link" href="nn.html" title="previous page"><span class="section-number">5. </span>Un dernier Essai : BERT</a>
 
         </div>
         
